@@ -1,0 +1,42 @@
+.form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 200px;
+    gap: 10px;
+}
+
+.input-container {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+input {
+    font: inherit;
+    padding: 5px;
+    border-radius: 5px;
+    border: none;
+}
+
+.submit-button {
+    font: inherit;
+    border-radius: 5px;
+    border: none;
+    padding: 10px;
+    background-color: hsl(240, 100%, 50%);
+    color: hsl(208, 100%, 100%);
+    transition: 0.5s ease;
+}
+
+.submit-button:disabled {
+    opacity: 0.5;
+}
+
+.submit-button:hover {
+    background-color: hsl(240, 100%, 70%);
+}
+
+.submit-button:focus {
+    border: 1px solid hsl(237, 90%, 90%);
+}
