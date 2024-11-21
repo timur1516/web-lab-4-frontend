@@ -1,6 +1,7 @@
 import styles from "./LoginForm.module.css";
-import React, {useState, useEffect} from "react";
-import { Link } from 'react-router-dom';
+import {useState, useEffect} from "react";
+import {Link, useNavigate} from 'react-router-dom';
+import {StatusCodes} from "http-status-codes";
 
 const LOGIN_REGEX = /^[a-zA-Z][a-zA-Z0-9]{3,23}$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
@@ -15,10 +16,12 @@ function SignUpForm(){
     const [pwdFocus, setPwdFocus] = useState(false);
 
     const [pwdConfirm, setPwdConfirm] = useState("");
-    const [validPwdonfirm, setvalidPwdConfirm] = useState(false);
+    const [validPwdConfirm, setValidPwdConfirm] = useState(false);
     const [pwdConfirmFocus, setPwdConfirmFocus] = useState(false);
     
     const [errorMsg, setErrorMsg] = useState("");
+
+    const navigate = useNavigate()
 
     useEffect(() => {
         setErrorMsg("");
@@ -30,7 +33,7 @@ function SignUpForm(){
 
     useEffect(() => {
         setValidPwd(PWD_REGEX.test(pwd));
-        setvalidPwdConfirm(pwd === pwdConfirm);
+        setValidPwdConfirm(pwd === pwdConfirm);
     }, [pwd, pwdConfirm]);
 
     function handleLoginChange(event){
@@ -45,15 +48,43 @@ function SignUpForm(){
         setPwdConfirm(event.target.value);
     }
 
-    function handleSignUp(event){
+    async function handleSignUp(event){
         event.preventDefault();
         
-        if(!validLogin || !validPwd || !validPwdonfirm){
+        if(!validLogin || !validPwd || !validPwdConfirm){
             setErrorMsg("Данные не валидны");
             return;
         }
 
-        //Some server logic
+        const response = await fetch(
+            "http://localhost:8080/web4_backend-1.0-SNAPSHOT/api/auth/signup", {
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                method: "POST",
+                body: JSON.stringify({username: login, password: pwd})
+            }
+        );
+        if(response.status === StatusCodes.INTERNAL_SERVER_ERROR){
+            setErrorMsg("Возникла непредвиденная ошибка на сервере");
+            return;
+        }
+        if(response.status === StatusCodes.CONFLICT){
+            setErrorMsg("Имя пользователя занято");
+            return;
+        }
+
+        try {
+            const result = await response.json();
+            sessionStorage.setItem("token", result.token);
+            // eslint-disable-next-line no-unused-vars
+        } catch (error){
+            setErrorMsg("Непредвиденный ответ от сервера");
+            return;
+        }
+
+        navigate("/main");
+
         setLogin("");
         setPwd("");
         setPwdConfirm("");
@@ -115,7 +146,7 @@ function SignUpForm(){
                 </div>
                 <div className={styles["input-container"]}>
                     <label htmlFor="pwdConfirm">
-                        Повторите пароль: {validPwdonfirm && validPwd ? '✅' : '❌'}
+                        Повторите пароль: {validPwdConfirm && validPwd ? '✅' : '❌'}
                     </label>
                     <input
                         type="password"
@@ -125,7 +156,7 @@ function SignUpForm(){
                         onFocus={() => setPwdConfirmFocus(true)}
                         onBlur={() => setPwdConfirmFocus(false)}
                     />
-                    { pwdConfirm && pwdConfirmFocus && !validPwdonfirm 
+                    { pwdConfirm && pwdConfirmFocus && !validPwdConfirm
                         ? <p className={styles["input-tip"]}>
                         Пароли должны совпадать.
                         </p>
@@ -134,7 +165,7 @@ function SignUpForm(){
                 </div>
                 <button className={styles["submit-button"]}
                     type="submit"
-                    disabled={validLogin && validPwd && validPwdonfirm ? false : true}>
+                    disabled={validLogin && validPwd && validPwdConfirm ? false : true}>
                         Зарегистрироваться
                 </button>
             </form>
