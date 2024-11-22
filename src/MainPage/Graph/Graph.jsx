@@ -4,7 +4,7 @@ import styles from "./Graph.module.css";
 function Graph(props) {
     const calculatorRef = useRef(null);
     const desmosCalculator = useRef(null);
-
+    const dataLoaded = useRef(false);
     function initGraph() {
         desmosCalculator.current = window.Desmos.GraphingCalculator(calculatorRef.current, {
             keypad: false,
@@ -71,16 +71,26 @@ function Graph(props) {
     }, []);
 
     useEffect(() => {
+        if(dataLoaded.current || props.history.length === 0) return;
+        props.history.map((point, _) => {
+            desmosCalculator.current.setExpression({
+                latex: `(${point.x}, ${point.y})`,
+                color: point.hit ? 'green' : 'red'
+            });
+        });
+        dataLoaded.current = true;
+    }, [props.history]);
+
+    useEffect(() => {
         draw_graph(props.radius);
     }, [props.radius]);
-
-    function handleGraphClick(event) {
+    async function handleGraphClick(event) {
         let calculatorRect = calculatorRef.current.getBoundingClientRect();
         let { x, y } = desmosCalculator.current.pixelsToMath({
             x: event.clientX - calculatorRect.left,
             y: event.clientY - calculatorRect.top
         });
-        let hit = props.pointChecker(x, y, props.radius);
+        let hit = await props.pointChecker(x, y, props.radius);
         if(hit !== null){
             desmosCalculator.current.setExpression({
                 latex: `(${x}, ${y})`,

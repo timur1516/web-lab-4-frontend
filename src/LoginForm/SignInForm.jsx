@@ -1,6 +1,7 @@
 import styles from "./LoginForm.module.css";
 import React, {useState, useEffect} from "react";
 import { Link, useNavigate } from 'react-router-dom';
+import {StatusCodes} from "http-status-codes";
 
 function SignInForm(){
     const navigate = useNavigate();
@@ -23,7 +24,7 @@ function SignInForm(){
         setPwd(event.target.value);
     }
 
-    function handleSignUp(event){
+    async function handleSignIn(event){
         event.preventDefault();
         
         if(!login || !pwd){
@@ -31,14 +32,41 @@ function SignInForm(){
             return;
         }
 
-        //Some server logic
+        const response = await fetch(
+            "http://localhost:8080/web4_backend-1.0-SNAPSHOT/api/auth/login", {
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                method: "POST",
+                body: JSON.stringify({username: login, password: pwd})
+            }
+        );
+        if(response.status === StatusCodes.INTERNAL_SERVER_ERROR){
+            setErrorMsg("Возникла непредвиденная ошибка на сервере");
+            return;
+        }
+        if(response.status === StatusCodes.NOT_FOUND){
+            setErrorMsg("Пользователь с таким именем не найден");
+            return;
+        }
+        if(response.status === StatusCodes.UNAUTHORIZED){
+            setErrorMsg("Неверный пароль");
+            return;
+        }
+
+        try {
+            const result = await response.json();
+            localStorage.setItem("token", result.token);
+            // eslint-disable-next-line no-unused-vars
+        } catch (error){
+            setErrorMsg("Непредвиденный ответ от сервера");
+            return;
+        }
+
+        navigate("/main");
 
         setLogin("");
         setPwd("");
-
-        sessionStorage.setItem('isLoggedIn', true);
-
-        navigate("/main");
     }
 
     return(
@@ -52,7 +80,7 @@ function SignInForm(){
                 </div>
                 : <></>
             }
-            <form onSubmit={handleSignUp}>
+            <form onSubmit={handleSignIn}>
                 <div className={styles["input-container"]}>
                     <label htmlFor="login">
                         Логин:

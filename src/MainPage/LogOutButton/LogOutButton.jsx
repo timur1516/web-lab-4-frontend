@@ -5,8 +5,18 @@ function LogOutButton(){
 
     const navigate = useNavigate();
 
-    function handleLogOut(){
-        sessionStorage.setItem('isLoggedIn', false);
+    async function handleLogOut(){
+        const token = localStorage.getItem('token');
+        await fetch(
+            "http://localhost:8080/web4_backend-1.0-SNAPSHOT/api/auth/logout", {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`
+                },
+                method: "POST"
+            }
+        );
+        localStorage.removeItem('token');
         navigate("/sign-in");
     }
 

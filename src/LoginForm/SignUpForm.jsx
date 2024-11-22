@@ -76,7 +76,7 @@ function SignUpForm(){
 
         try {
             const result = await response.json();
-            sessionStorage.setItem("token", result.token);
+            localStorage.setItem("token", result.token);
             // eslint-disable-next-line no-unused-vars
         } catch (error){
             setErrorMsg("Непредвиденный ответ от сервера");
