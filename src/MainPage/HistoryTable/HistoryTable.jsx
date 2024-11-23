@@ -9,9 +9,18 @@ function HistoryTable(props) {
                 <th>X</th>
                 <th>Y</th>
                 <th>R</th>
-                <th>Попадание</th>
-                <th>Время запроса</th>
-                <th>Время выполнения</th>
+                <th>
+                    <span className={styles["lg-view"]}>Попадание</span>
+                    <span className={styles["sm-view"]}>🎯</span>
+                </th>
+                <th>
+                    <span className={styles["lg-view"]}>Время запроса</span>
+                    <span className={styles["sm-view"]}>🕓</span>
+                </th>
+                <th>
+                    <span className={styles["lg-view"]}>Время выполнения</span>
+                    <span className={styles["sm-view"]}>🚀</span>
+                </th>
             </tr>
             </thead>
             <tbody>
@@ -20,9 +29,23 @@ function HistoryTable(props) {
                     <td>{entry.x.toFixed(2)}</td>
                     <td>{entry.y.toFixed(2)}</td>
                     <td>{entry.r.toFixed(2)}</td>
-                    <td>{entry.hit ? 'Попал' : 'Промазал'}</td>
-                    <td>{entry.reqTime}</td>
-                    <td>{entry.procTime}</td>
+                    <td>
+                        <span className={styles["lg-view"]}>
+                            {entry.hit ? 'Попал' : 'Промазал'}
+                        </span>
+                        <span className={styles["sm-view"]}>
+                            {entry.hit ? '✅' : '❌'}
+                        </span>
+                    </td>
+                    <td>
+                        <span className={styles["lg-view"]}>
+                            {new Date(entry.reqTime).toLocaleTimeString()}
+                        </span>
+                        <span className={styles["sm-view"]}>
+                            {new Date(entry.reqTime).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                        </span>
+                    </td>
+                    <td>{entry.procTime} мкс</td>
                 </tr>
             ))}
             </tbody>

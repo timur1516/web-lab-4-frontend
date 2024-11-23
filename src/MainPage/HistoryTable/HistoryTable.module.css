@@ -7,6 +7,24 @@ table {
 td, th {
     border: 1px solid blue;
     padding: 5px;
-    word-break: break-all;
+    word-break: normal;
     text-align: center;
+}
+
+.lg-view{
+    display: block;
+}
+
+.sm-view{
+    display: none;
+}
+
+@media (max-width: 800px) {
+    .lg-view{
+        display: none;
+    }
+
+    .sm-view{
+        display: block;
+    }
 }

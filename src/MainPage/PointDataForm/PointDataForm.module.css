@@ -12,6 +12,15 @@
     gap: 5px;
 }
 
+@media (max-width: 800px) {
+    .input-container {
+        flex-direction: row;
+    }
+    input{
+        width: 100%;
+    }
+}
+
 input {
     font: inherit;
     padding: 5px;

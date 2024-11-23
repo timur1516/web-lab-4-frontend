@@ -3,11 +3,18 @@
     flex-direction: row;
     gap: 10px;
     justify-content: center;
+    align-items: center;
     margin: 10px auto;
     padding: 10px;
     border-radius: 20px;
     border: 1px solid blue;
     box-shadow: 0 0 10px 10px blue;
+}
+
+@media(max-width: 800px) {
+    .graph-form-container {
+        flex-direction: column;
+    }
 }
 
 .history-table-container{
