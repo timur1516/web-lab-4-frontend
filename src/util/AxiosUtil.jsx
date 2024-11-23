@@ -11,17 +11,19 @@ async function refreshAccessToken() {
     });
     const newAccessToken = response.data.token;
     localStorage.setItem('accessToken', newAccessToken);
+    return newAccessToken;
 }
 
 axiosUtil.interceptors.request.use(
     async (config) => {
         const accessToken = localStorage.getItem('accessToken');
-        if (accessToken) {
+        if (accessToken)
             config.headers.Authorization = `Bearer ${accessToken}`;
-        }
         return config;
-    },
-    (error) => Promise.reject(error)
+    }, (error) => {
+        window.location.href = "/error";
+        return Promise.reject(error);
+    }
 );
 
 axiosUtil.interceptors.response.use(
@@ -35,10 +37,14 @@ axiosUtil.interceptors.response.use(
                 originalRequest.headers.Authorization = `Bearer ${newToken}`;
                 return axiosUtil(originalRequest);
             } catch (refreshError) {
-                window.location.href = "/sign-in";
+                if (refreshError?.status === StatusCodes.UNAUTHORIZED)
+                    window.location.href = "/sign-in";
+                else
+                    window.location.href = "/error";
                 return Promise.reject(refreshError);
             }
         }
+        window.location.href = "/error";
         return Promise.reject(error);
     }
 );

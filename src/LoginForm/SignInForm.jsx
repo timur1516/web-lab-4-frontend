@@ -3,6 +3,7 @@ import {useState, useEffect} from "react";
 import {Link, useNavigate} from 'react-router-dom';
 import {StatusCodes} from "http-status-codes";
 import axios from "axios";
+import ErrorMessage from "../ErrorMessage/ErrorMessage.jsx";
 
 function SignInForm() {
     const navigate = useNavigate();
@@ -41,6 +42,10 @@ function SignInForm() {
                 navigate("/main");
             })
             .catch((error) => {
+                if (!error.response) {
+                    setErrorMsg("Сервер временно не доступен, попробуйте позже");
+                    return;
+                }
                 if (error.response.status === StatusCodes.INTERNAL_SERVER_ERROR)
                     setErrorMsg("Возникла непредвиденная ошибка на сервере");
                 if (error.response.status === StatusCodes.NOT_FOUND)
@@ -55,12 +60,7 @@ function SignInForm() {
             <div className={styles["header-container"]}>
                 <span>Вход</span>
             </div>
-            {errorMsg
-                ? <div className={styles["message-container"]}>
-                    <span className={styles["error-message"]}>{errorMsg}</span>
-                </div>
-                : <></>
-            }
+            <ErrorMessage error={errorMsg}/>
             <form onSubmit={handleSignIn}>
                 <div className={styles["input-container"]}>
                     <label htmlFor="login">
@@ -86,7 +86,7 @@ function SignInForm() {
                 </div>
                 <button className={styles["submit-button"]}
                         type="submit"
-                        disabled={login && pwd ? false : true}>
+                        disabled={!(login && pwd)}>
                     Войти
                 </button>
             </form>

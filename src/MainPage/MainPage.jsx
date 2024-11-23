@@ -5,41 +5,46 @@ import styles from "./MainPage.module.css";
 import PointDataForm from "./PointDataForm/PointDataForm";
 import {useEffect, useState} from "react";
 import axiosUtil from "../util/AxiosUtil.jsx";
+import ErrorMessage from "../ErrorMessage/ErrorMessage.jsx";
+import {useNavigate} from "react-router-dom";
 
 function MainPage() {
-
     const [radius, setRadius] = useState(1);
     const [history, setHistory] = useState([]);
     const [isDataLoaded, setIsDataLoaded] = useState(false);
 
-    //TODO: add server error handling
-    async function loadPoints() {
-        const response = await axiosUtil.get("main/get-points");
-        setHistory(response.data);
+    const [errorMsg, setErrorMsg] = useState("");
+    
+    function loadPoints() {
+        axiosUtil
+            .get("main/get-points")
+            .then((response) => {
+                setHistory(response.data);
+                setIsDataLoaded(true);
+            });
     }
 
-    useEffect(() => {
-        loadPoints().then(() => {
-            setIsDataLoaded(true);
-        });
-    }, []);
+    useEffect(loadPoints, []);
 
-    //TODO: add server error handling
     async function checkPoint(x, y, r) {
-        const response = await axiosUtil.post("main/check-point", {x: x, y: y, r: r});
-        setHistory((h) => [response.data, ...h]);
-        return response.data.hit;
+        return axiosUtil
+            .post("main/check-point", { x, y, r })
+            .then((response) => {
+                setHistory((h) => [response.data, ...h]);
+                return response.data.hit;
+            });
     }
 
     function handleRadiusChange(event) {
         setRadius(Number(event.target.value));
     }
 
-    if(!isDataLoaded) return (<></>);
+    if (!isDataLoaded) return (<></>);
 
     return (
         <>
             <LogOutButton/>
+            <ErrorMessage error={errorMsg}/>
             <div className={styles["graph-form-container"]}>
                 <PointDataForm
                     radius={radius}

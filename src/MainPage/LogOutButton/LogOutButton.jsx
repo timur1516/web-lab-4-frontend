@@ -6,7 +6,6 @@ function LogOutButton() {
 
     const navigate = useNavigate();
 
-    //TODO: add server error handling
     async function handleLogOut() {
         await axiosUtil.post("auth/logout");
         navigate("/sign-in");

@@ -3,6 +3,7 @@ import {useState, useEffect} from "react";
 import {Link, useNavigate} from 'react-router-dom';
 import {StatusCodes} from "http-status-codes";
 import axios from "axios";
+import ErrorMessage from "../ErrorMessage/ErrorMessage.jsx";
 
 const LOGIN_REGEX = /^[a-zA-Z][a-zA-Z0-9]{3,23}$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
@@ -65,6 +66,10 @@ function SignUpForm() {
                 navigate("/main");
             })
             .catch((error) => {
+                if(!error.response) {
+                    setErrorMsg("Сервер временно не доступен, попробуйте позже");
+                    return;
+                }
                 if (error.response.status === StatusCodes.INTERNAL_SERVER_ERROR)
                     setErrorMsg("Возникла непредвиденная ошибка на сервере");
                 if (error.response.status === StatusCodes.CONFLICT)
@@ -77,12 +82,7 @@ function SignUpForm() {
             <div className={styles["header-container"]}>
                 <span>Регистрация</span>
             </div>
-            {errorMsg
-                ? <div className={styles["message-container"]}>
-                    <span className={styles["error-message"]}>{errorMsg}</span>
-                </div>
-                : <></>
-            }
+            <ErrorMessage error={errorMsg}/>
             <form onSubmit={handleSignUp}>
                 <div className={styles["input-container"]}>
                     <label htmlFor="login">
@@ -147,7 +147,7 @@ function SignUpForm() {
                 </div>
                 <button className={styles["submit-button"]}
                         type="submit"
-                        disabled={validLogin && validPwd && validPwdConfirm ? false : true}>
+                        disabled={!(validLogin && validPwd && validPwdConfirm)}>
                     Зарегистрироваться
                 </button>
             </form>
