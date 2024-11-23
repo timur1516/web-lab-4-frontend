@@ -3,83 +3,43 @@ import HistoryTable from "./HistoryTable/HistoryTable";
 import LogOutButton from "./LogOutButton/LogOutButton";
 import styles from "./MainPage.module.css";
 import PointDataForm from "./PointDataForm/PointDataForm";
-import React, {useEffect, useState} from "react";
-import {StatusCodes} from "http-status-codes";
-import {useNavigate} from "react-router-dom";
+import {useEffect, useState} from "react";
+import axiosUtil from "../util/AxiosUtil.jsx";
 
 function MainPage() {
 
     const [radius, setRadius] = useState(1);
     const [history, setHistory] = useState([]);
+    const [isDataLoaded, setIsDataLoaded] = useState(false);
 
-    const navigate = useNavigate();
+    //TODO: add server error handling
+    async function loadPoints() {
+        const response = await axiosUtil.get("main/get-points");
+        setHistory(response.data);
+    }
+
+    useEffect(() => {
+        loadPoints().then(() => {
+            setIsDataLoaded(true);
+        });
+    }, []);
+
+    //TODO: add server error handling
+    async function checkPoint(x, y, r) {
+        const response = await axiosUtil.post("main/check-point", {x: x, y: y, r: r});
+        setHistory((h) => [response.data, ...h]);
+        return response.data.hit;
+    }
 
     function handleRadiusChange(event) {
         setRadius(Number(event.target.value));
     }
 
-    async function loadPoints() {
-        const response = await fetch(
-            "http://localhost:8080/web4_backend-1.0-SNAPSHOT/api/main/getpoints", {
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${localStorage.getItem('token')}`
-                },
-                method: "GET"
-            }
-        );
-        if(!response.ok){
-            sessionStorage.removeItem('token');
-            navigate("/sign-in");
-            return;
-        }
-
-        const authHeader = response.headers.get("Authorization");
-        if (authHeader && authHeader.startsWith("Bearer ")) {
-            const token = authHeader.split(" ")[1]; // Извлекаем токен после "Bearer"
-            localStorage.setItem('token', token);
-        }
-
-        const data = await response.json();
-        setHistory(data);
-    }
-
-    useEffect(() => {
-        loadPoints();
-    }, []);
-
-    async function checkPoint(x, y, r) {
-        const response = await fetch(
-            "http://localhost:8080/web4_backend-1.0-SNAPSHOT/api/main/checkpoint", {
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${localStorage.getItem('token')}`
-                },
-                method: "POST",
-                body: JSON.stringify({x: x, y: y, r: r})
-            }
-        );
-        if(!response.ok){
-            sessionStorage.removeItem('token');
-            navigate("/sign-in");
-            return;
-        }
-
-        const authHeader = response.headers.get("Authorization");
-        if (authHeader && authHeader.startsWith("Bearer ")) {
-            const token = authHeader.split(" ")[1]; // Извлекаем токен после "Bearer"
-            localStorage.setItem('token', token);
-        }
-
-        const data = await response.json();
-        setHistory((h) => [data, ...h]);
-
-        return data.hit;
-    }
+    if(!isDataLoaded) return (<></>);
 
     return (
         <>
-            <LogOutButton />
+            <LogOutButton/>
             <div className={styles["graph-form-container"]}>
                 <PointDataForm
                     radius={radius}

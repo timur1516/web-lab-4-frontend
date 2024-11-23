@@ -1,75 +1,56 @@
 import styles from "./LoginForm.module.css";
-import React, {useState, useEffect} from "react";
-import { Link, useNavigate } from 'react-router-dom';
+import {useState, useEffect} from "react";
+import {Link, useNavigate} from 'react-router-dom';
 import {StatusCodes} from "http-status-codes";
+import axios from "axios";
 
-function SignInForm(){
+function SignInForm() {
     const navigate = useNavigate();
 
     const [login, setLogin] = useState("");
 
     const [pwd, setPwd] = useState("");
-    
+
     const [errorMsg, setErrorMsg] = useState("");
 
     useEffect(() => {
         setErrorMsg("");
     }, [login, pwd]);
 
-    function handleLoginChange(event){
+    function handleLoginChange(event) {
         setLogin(event.target.value);
     }
 
-    function handlePwdChange(event){
+    function handlePwdChange(event) {
         setPwd(event.target.value);
     }
 
-    async function handleSignIn(event){
+    async function handleSignIn(event) {
         event.preventDefault();
-        
-        if(!login || !pwd){
+
+        if (!login || !pwd) {
             setErrorMsg("Данные не валидны");
             return;
         }
 
-        const response = await fetch(
-            "http://localhost:8080/web4_backend-1.0-SNAPSHOT/api/auth/login", {
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                method: "POST",
-                body: JSON.stringify({username: login, password: pwd})
-            }
-        );
-        if(response.status === StatusCodes.INTERNAL_SERVER_ERROR){
-            setErrorMsg("Возникла непредвиденная ошибка на сервере");
-            return;
-        }
-        if(response.status === StatusCodes.NOT_FOUND){
-            setErrorMsg("Пользователь с таким именем не найден");
-            return;
-        }
-        if(response.status === StatusCodes.UNAUTHORIZED){
-            setErrorMsg("Неверный пароль");
-            return;
-        }
-
-        try {
-            const result = await response.json();
-            localStorage.setItem("token", result.token);
-            // eslint-disable-next-line no-unused-vars
-        } catch (error){
-            setErrorMsg("Непредвиденный ответ от сервера");
-            return;
-        }
-
-        navigate("/main");
-
-        setLogin("");
-        setPwd("");
+        axios
+            .post("auth/login", {username: login, password: pwd})
+            .then((response) => {
+                localStorage.setItem("accessToken", response.data.accessToken);
+                localStorage.setItem("refreshToken", response.data.refreshToken);
+                navigate("/main");
+            })
+            .catch((error) => {
+                if (error.response.status === StatusCodes.INTERNAL_SERVER_ERROR)
+                    setErrorMsg("Возникла непредвиденная ошибка на сервере");
+                if (error.response.status === StatusCodes.NOT_FOUND)
+                    setErrorMsg("Пользователь с таким именем не найден");
+                if (error.response.status === StatusCodes.UNAUTHORIZED)
+                    setErrorMsg("Неверный пароль");
+            });
     }
 
-    return(
+    return (
         <div className={styles["registration-form-container"]}>
             <div className={styles["header-container"]}>
                 <span>Вход</span>
@@ -104,9 +85,9 @@ function SignInForm(){
                     />
                 </div>
                 <button className={styles["submit-button"]}
-                    type="submit"
-                    disabled={login && pwd ? false : true}>
-                        Войти
+                        type="submit"
+                        disabled={login && pwd ? false : true}>
+                    Войти
                 </button>
             </form>
             <div className={styles["change-form-container"]}>

@@ -1,10 +1,11 @@
-import React, { useEffect, useRef } from "react";
+import {useEffect, useRef} from "react";
 import styles from "./Graph.module.css";
 
 function Graph(props) {
     const calculatorRef = useRef(null);
     const desmosCalculator = useRef(null);
     const dataLoaded = useRef(false);
+
     function initGraph() {
         desmosCalculator.current = window.Desmos.GraphingCalculator(calculatorRef.current, {
             keypad: false,
@@ -71,7 +72,7 @@ function Graph(props) {
     }, []);
 
     useEffect(() => {
-        if(dataLoaded.current || props.history.length === 0) return;
+        if (dataLoaded.current || props.history.length === 0) return;
         props.history.map((point, _) => {
             desmosCalculator.current.setExpression({
                 latex: `(${point.x}, ${point.y})`,
@@ -84,14 +85,15 @@ function Graph(props) {
     useEffect(() => {
         draw_graph(props.radius);
     }, [props.radius]);
+
     async function handleGraphClick(event) {
         let calculatorRect = calculatorRef.current.getBoundingClientRect();
-        let { x, y } = desmosCalculator.current.pixelsToMath({
+        let {x, y} = desmosCalculator.current.pixelsToMath({
             x: event.clientX - calculatorRect.left,
             y: event.clientY - calculatorRect.top
         });
         let hit = await props.pointChecker(x, y, props.radius);
-        if(hit !== null){
+        if (hit !== null) {
             desmosCalculator.current.setExpression({
                 latex: `(${x}, ${y})`,
                 color: hit ? 'green' : 'red'

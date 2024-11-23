@@ -1,26 +1,18 @@
 import styles from "./LogOutButton.module.css"
-import { useNavigate } from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
+import axiosUtil from "../../util/AxiosUtil.jsx";
 
-function LogOutButton(){
+function LogOutButton() {
 
     const navigate = useNavigate();
 
-    async function handleLogOut(){
-        const token = localStorage.getItem('token');
-        await fetch(
-            "http://localhost:8080/web4_backend-1.0-SNAPSHOT/api/auth/logout", {
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`
-                },
-                method: "POST"
-            }
-        );
-        localStorage.removeItem('token');
+    //TODO: add server error handling
+    async function handleLogOut() {
+        await axiosUtil.post("auth/logout");
         navigate("/sign-in");
     }
 
-    return(
+    return (
         <button className={styles["logout-button"]} onClick={handleLogOut}>
             Выйти из аккаунта
         </button>

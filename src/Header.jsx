@@ -1,6 +1,5 @@
-
-function Header(){
-    return(
+function Header() {
+    return (
         <header>
             <span>Ступин Тимур</span>
             <span>P3208</span>

@@ -9,18 +9,17 @@ function PrivateRoute({children}) {
     }, []);
 
     async function authenticate() {
-        const token = localStorage.getItem("token");
-        if (token == null) {
+        const accessToken = localStorage.getItem("accessToken");
+        if (accessToken == null) {
             setIsAuthenticated(false);
             return;
         }
         const response = await fetch(
-            "http://localhost:8080/web4_backend-1.0-SNAPSHOT/api/auth/checktoken", {
+            "http://localhost:8080/web4_backend-1.0-SNAPSHOT/api/auth/check-token", {
                 headers: {
                     "Content-Type": "application/json"
                 },
-                method: "POST",
-                body: JSON.stringify({token: token})
+                method: "HEAD"
             }
         );
         setIsAuthenticated(response.ok);
