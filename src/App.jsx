@@ -1,9 +1,9 @@
 import {BrowserRouter as Router, Route, Routes} from "react-router-dom";
-import SignInPage from "./pages/SignInPage.jsx";
-import SignUpPage from "./pages/SignUpPage.jsx";
-import MainPage from "./pages/MainPage.jsx";
-import ErrorPage from "./pages/ErrorPage.jsx";
-import NotFoundPage from "./pages/NotFoundPage.jsx";
+import SignInPage from "./pages/AuthPage/SignInPage.jsx";
+import SignUpPage from "./pages/AuthPage/SignUpPage.jsx";
+import MainPage from "./pages/MainPage/MainPage.jsx";
+import ErrorPage from "./pages/ErrorPage/ErrorPage.jsx";
+import NotFoundPage from "./pages/NotFoundPage/NotFoundPage.jsx";
 
 function App() {
     return (

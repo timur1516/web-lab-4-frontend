@@ -1,7 +1,7 @@
-import {useEffect, useRef} from "react";
+import {forwardRef, useEffect, useImperativeHandle, useRef} from "react";
 import styles from "./Graph.module.css";
 
-function Graph(props) {
+const Graph = forwardRef((props, ref) => {
     const calculatorRef = useRef(null);
     const desmosCalculator = useRef(null);
     const dataLoaded = useRef(false);
@@ -21,7 +21,7 @@ function Graph(props) {
         });
     }
 
-    function draw_graph(r) {
+    function drawGraph(r) {
         desmosCalculator.current.setExpression({
             id: 'area1',
             latex: `x^{2}+y^{2}<=${r}^2\\{y>=0\\}\\{x>=0\\}`,
@@ -83,22 +83,27 @@ function Graph(props) {
     }, [props.history]);
 
     useEffect(() => {
-        draw_graph(props.radius);
+        drawGraph(props.radius);
     }, [props.radius]);
 
-    async function handleGraphClick(event) {
+    useImperativeHandle(ref, () => ({
+        drawPoint(x, y, hit) {
+            if (hit !== null) {
+                desmosCalculator.current.setExpression({
+                    latex: `(${x}, ${y})`,
+                    color: hit ? 'green' : 'red'
+                });
+            }
+        }
+    }));
+
+    function handleGraphClick(event) {
         let calculatorRect = calculatorRef.current.getBoundingClientRect();
         let {x, y} = desmosCalculator.current.pixelsToMath({
             x: event.clientX - calculatorRect.left,
             y: event.clientY - calculatorRect.top
         });
-        let hit = await props.pointChecker(x, y, props.radius);
-        if (hit !== null) {
-            desmosCalculator.current.setExpression({
-                latex: `(${x}, ${y})`,
-                color: hit ? 'green' : 'red'
-            });
-        }
+        props.pointChecker(x, y, props.radius);
     }
 
     return (
@@ -108,6 +113,6 @@ function Graph(props) {
             onClick={handleGraphClick}
         ></div>
     );
-}
+});
 
 export default Graph;

@@ -1,3 +1,9 @@
+.history-table-container{
+    margin: 10px;
+    display: flex;
+    justify-content: center;
+}
+
 .graph-form-container {
     display: flex;
     flex-direction: row;
