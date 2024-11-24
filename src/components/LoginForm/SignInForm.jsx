@@ -84,7 +84,7 @@ function SignInForm() {
                         onChange={handlePwdChange}
                     />
                 </div>
-                <button className={styles["submit-button"]}
+                <button className={`${styles.button} button`}
                         type="submit"
                         disabled={!(login && pwd)}>
                     Войти

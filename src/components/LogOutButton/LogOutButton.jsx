@@ -12,7 +12,7 @@ function LogOutButton() {
     }
 
     return (
-        <button className={styles["logout-button"]} onClick={handleLogOut}>
+        <button className={`${styles.button} button`} onClick={handleLogOut}>
             Выйти из аккаунта
         </button>
     );

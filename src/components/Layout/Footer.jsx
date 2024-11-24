@@ -1,8 +1,10 @@
+import styles from "./Layout.module.css"
+
 function Footer() {
     return (
-        <footer>
+        <div className={styles.footer}>
             <span>ИТМО 2024</span>
-        </footer>
+        </div>
     );
 }
 

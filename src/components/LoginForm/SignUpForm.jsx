@@ -145,7 +145,7 @@ function SignUpForm() {
                         : <></>
                     }
                 </div>
-                <button className={styles["submit-button"]}
+                <button className={`${styles.button} button`}
                         type="submit"
                         disabled={!(validLogin && validPwd && validPwdConfirm)}>
                     Зарегистрироваться

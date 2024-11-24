@@ -1,19 +1,16 @@
-import Graph from "./Graph/Graph";
-import HistoryTable from "./HistoryTable/HistoryTable";
-import LogOutButton from "./LogOutButton/LogOutButton";
-import styles from "./MainPage.module.css";
-import PointDataForm from "./PointDataForm/PointDataForm";
+import Graph from "../components/Graph/Graph.jsx";
+import HistoryTable from "../components/HistoryTable/HistoryTable.jsx";
+import LogOutButton from "../components/LogOutButton/LogOutButton.jsx";
+import PointDataForm from "../components/PointDataForm/PointDataForm.jsx";
 import {useEffect, useState} from "react";
 import axiosUtil from "../util/AxiosUtil.jsx";
-import ErrorMessage from "../ErrorMessage/ErrorMessage.jsx";
-import {useNavigate} from "react-router-dom";
+import GraphFromContainer from "../components/GraphFormContainer/GraphFromContainer.jsx";
+import HistoryTableContainer from "../components/HistoryTableContainer/HistoryTableContainer.jsx";
 
 function MainPage() {
     const [radius, setRadius] = useState(1);
     const [history, setHistory] = useState([]);
     const [isDataLoaded, setIsDataLoaded] = useState(false);
-
-    const [errorMsg, setErrorMsg] = useState("");
     
     function loadPoints() {
         axiosUtil
@@ -44,8 +41,7 @@ function MainPage() {
     return (
         <>
             <LogOutButton/>
-            <ErrorMessage error={errorMsg}/>
-            <div className={styles["graph-form-container"]}>
+            <GraphFromContainer>
                 <PointDataForm
                     radius={radius}
                     radiusChangeHandler={handleRadiusChange}
@@ -56,12 +52,12 @@ function MainPage() {
                     pointChecker={checkPoint}
                     history={history}
                 />
-            </div>
-            <div className={styles["history-table-container"]}>
+            </GraphFromContainer>
+            <HistoryTableContainer>
                 <HistoryTable
                     history={history}
                 />
-            </div>
+            </HistoryTableContainer>
         </>
     );
 }
