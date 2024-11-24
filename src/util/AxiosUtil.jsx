@@ -1,22 +1,25 @@
 import axios from "axios";
 import {StatusCodes} from "http-status-codes";
+import Cookies from "js-cookie";
+import saveTokenToCookies from "./TokenUtil.jsx";
 
-axios.defaults.baseURL = 'http://localhost:8080/web4_backend-1.0-SNAPSHOT/api';
+axios.defaults.baseURL = "http://localhost:8080/web4_backend-1.0-SNAPSHOT/api";
 
 const axiosUtil = axios.create();
 
 async function refreshAccessToken() {
-    const response = await axios.post('/auth/refresh-token', {
-        "token": localStorage.getItem("refreshToken")
+    const response = await axios.post("/auth/refresh-token", {
+        "token": Cookies.get("refreshToken")
     });
     const newAccessToken = response.data.token;
-    localStorage.setItem('accessToken', newAccessToken);
+    Cookies.remove("accessToken");
+    saveTokenToCookies(newAccessToken, "accessToken");
     return newAccessToken;
 }
 
 axiosUtil.interceptors.request.use(
     async (config) => {
-        const accessToken = localStorage.getItem('accessToken');
+        const accessToken = Cookies.get("accessToken");
         if (accessToken)
             config.headers.Authorization = `Bearer ${accessToken}`;
         return config;

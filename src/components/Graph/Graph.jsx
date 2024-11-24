@@ -1,13 +1,14 @@
 import {forwardRef, useEffect, useImperativeHandle, useRef} from "react";
 import styles from "./Graph.module.css";
+import PropTypes from "prop-types";
 
-const Graph = forwardRef((props, ref) => {
-    const calculatorRef = useRef(null);
-    const desmosCalculator = useRef(null);
-    const dataLoaded = useRef(false);
+const Graph = forwardRef(({pointChecker, radius, history}, ref) => {
+    const graphContainerRef = useRef(null);
+    const graphRef = useRef(null);
+    const isDataLoaded = useRef(false);
 
     function initGraph() {
-        desmosCalculator.current = window.Desmos.GraphingCalculator(calculatorRef.current, {
+        graphRef.current = window.Desmos.GraphingCalculator(graphContainerRef.current, {
             keypad: false,
             expressions: false,
             settingsMenu: false,
@@ -22,37 +23,37 @@ const Graph = forwardRef((props, ref) => {
     }
 
     function drawGraph(r) {
-        desmosCalculator.current.setExpression({
-            id: 'area1',
+        graphRef.current.setExpression({
+            id: "area1",
             latex: `x^{2}+y^{2}<=${r}^2\\{y>=0\\}\\{x>=0\\}`,
-            color: Desmos.Colors.BLUE
+            color: window.Desmos.Colors.BLUE
         });
-        desmosCalculator.current.setExpression({
-            id: 'area2',
+        graphRef.current.setExpression({
+            id: "area2",
             latex: `y<=2x+${r}\\{y>=0\\}\\{x<=0\\}`,
-            color: Desmos.Colors.BLUE
+            color: window.Desmos.Colors.BLUE
         });
-        desmosCalculator.current.setExpression({
-            id: 'area3',
+        graphRef.current.setExpression({
+            id: "area3",
             latex: `-${r}<=x<=0\\{-${r}/2<=y<=0\\}`,
-            color: Desmos.Colors.BLUE
+            color: window.Desmos.Colors.BLUE
         });
-        desmosCalculator.current.setExpression({
-            id: 'line1',
+        graphRef.current.setExpression({
+            id: "line1",
             latex: `y=0\\{-${r}<=x<=-${r}/2\\}`,
-            color: Desmos.Colors.BLUE
+            color: window.Desmos.Colors.BLUE
         });
-        desmosCalculator.current.setExpression({
-            id: 'line2',
+        graphRef.current.setExpression({
+            id: "line2",
             latex: `y=-${r}/2\\{-${r}<=x<=0\\}`,
-            color: Desmos.Colors.BLUE
+            color: window.Desmos.Colors.BLUE
         });
-        desmosCalculator.current.setExpression({
-            id: 'line3',
+        graphRef.current.setExpression({
+            id: "line3",
             latex: `y=0\\{0<=x<=${r}\\}`,
-            color: Desmos.Colors.BLUE
+            color: window.Desmos.Colors.BLUE
         });
-        desmosCalculator.current.setMathBounds({
+        graphRef.current.setMathBounds({
             left: -r - 1,
             right: r + 1,
             bottom: -r - 1,
@@ -61,8 +62,26 @@ const Graph = forwardRef((props, ref) => {
     }
 
     function destroyGraph() {
-        if (desmosCalculator.current) {
-            desmosCalculator.current.destroy();
+        if (graphRef.current) {
+            graphRef.current.destroy();
+        }
+    }
+
+    function handleGraphClick(event) {
+        let calculatorRect = graphContainerRef.current.getBoundingClientRect();
+        let {x, y} = graphRef.current.pixelsToMath({
+            x: event.clientX - calculatorRect.left,
+            y: event.clientY - calculatorRect.top
+        });
+        pointChecker(x, y, radius);
+    }
+
+    function drawPoint(x, y, hit) {
+        if (hit !== null) {
+            graphRef.current.setExpression({
+                latex: `(${x}, ${y})`,
+                color: hit ? "green" : "red"
+            });
         }
     }
 
@@ -72,47 +91,34 @@ const Graph = forwardRef((props, ref) => {
     }, []);
 
     useEffect(() => {
-        if (dataLoaded.current || props.history.length === 0) return;
-        props.history.map((point, _) => {
-            desmosCalculator.current.setExpression({
-                latex: `(${point.x}, ${point.y})`,
-                color: point.hit ? 'green' : 'red'
-            });
+        if (isDataLoaded.current || history.length === 0) return;
+        history.forEach((point) => {
+            drawPoint(point.x, point.y, point.hit);
         });
-        dataLoaded.current = true;
-    }, [props.history]);
+        isDataLoaded.current = true;
+    }, [history]);
 
     useEffect(() => {
-        drawGraph(props.radius);
-    }, [props.radius]);
+        drawGraph(radius);
+    }, [radius]);
 
-    useImperativeHandle(ref, () => ({
-        drawPoint(x, y, hit) {
-            if (hit !== null) {
-                desmosCalculator.current.setExpression({
-                    latex: `(${x}, ${y})`,
-                    color: hit ? 'green' : 'red'
-                });
-            }
-        }
-    }));
-
-    function handleGraphClick(event) {
-        let calculatorRect = calculatorRef.current.getBoundingClientRect();
-        let {x, y} = desmosCalculator.current.pixelsToMath({
-            x: event.clientX - calculatorRect.left,
-            y: event.clientY - calculatorRect.top
-        });
-        props.pointChecker(x, y, props.radius);
-    }
+    useImperativeHandle(ref, () => ({drawPoint}));
 
     return (
         <div
             className={styles["graph-container"]}
-            ref={calculatorRef}
+            ref={graphContainerRef}
             onClick={handleGraphClick}
         ></div>
     );
 });
+
+Graph.propTypes = {
+    pointChecker: PropTypes.func,
+    radius: PropTypes.number,
+    history: PropTypes.array
+}
+
+Graph.displayName = "Graph";
 
 export default Graph;

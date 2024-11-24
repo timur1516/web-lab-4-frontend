@@ -1,11 +1,13 @@
 import {useState, useEffect} from "react";
-import {useNavigate} from 'react-router-dom';
+import {useNavigate} from "react-router-dom";
 import {StatusCodes} from "http-status-codes";
 import axios from "axios";
 import ErrorMessage from "../../ErrorMessage/ErrorMessage.jsx";
 import Input from "../../Input/Input.jsx";
 import PasswordInput from "../../Input/PasswordInput.jsx";
 import styles from "./AuthForm.module.css"
+import Cookies from "js-cookie";
+import saveTokenToCookies from "../../../util/TokenUtil.jsx";
 
 const LOGIN_REGEX = /^[a-zA-Z][a-zA-Z0-9]{3,23}$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
@@ -21,7 +23,7 @@ function SignUpForm() {
 
     const isLoginValid = LOGIN_REGEX.test(login);
     const isPwdValid = PWD_REGEX.test(pwd);
-    const isPwdConfirmValid = pwd === pwdConfirm;
+    const isPwdConfirmValid = pwd === pwdConfirm && isPwdValid;
 
     useEffect(() => {
         setErrorMsg("");
@@ -38,8 +40,8 @@ function SignUpForm() {
         axios
             .post("auth/signup", {username: login, password: pwd})
             .then((response) => {
-                localStorage.setItem("accessToken", response.data.accessToken);
-                localStorage.setItem("refreshToken", response.data.refreshToken);
+                saveTokenToCookies(response.data.accessToken, "accessToken");
+                saveTokenToCookies(response.data.refreshToken, "refreshToken");
                 navigate("/main");
             })
             .catch((error) => {
@@ -57,13 +59,13 @@ function SignUpForm() {
             <ErrorMessage error={errorMsg}/>
             <div className={styles["input-container"]}>
                 <label htmlFor="login">
-                    Введите логин:
+                    Логин:
                 </label>
                 <Input
                     id="login"
-                    label="Логин:"
                     value={login}
                     onChange={setLogin}
+                    placeholder={"Введите логин"}
                     validator={(value) => LOGIN_REGEX.test(value)}
                     tip="4-24 символа. Первый символ - буква. Разрешены латинские буквы и цифры."
                     isRequired
@@ -71,12 +73,13 @@ function SignUpForm() {
             </div>
             <div className={styles["input-container"]}>
                 <label htmlFor="pwd">
-                    Введите пароль:
+                    Пароль:
                 </label>
                 <PasswordInput
                     id="pwd"
                     value={pwd}
                     onChange={setPwd}
+                    placeholder={"Введите пароль"}
                     validator={(value) => PWD_REGEX.test(value)}
                     tip="8-24 символа. Должен включать заглавные, строчные буквы, цифры и спецсимволы (!@#$%)."
                     isRequired
@@ -90,7 +93,8 @@ function SignUpForm() {
                     id="pwdConfirm"
                     value={pwdConfirm}
                     onChange={setPwdConfirm}
-                    validator={(value) => value === pwd}
+                    placeholder={"Повторите пароль"}
+                    validator={(value) => value === pwd && isPwdValid}
                     tip="Пароли должны совпадать."
                     isRequired
                 />

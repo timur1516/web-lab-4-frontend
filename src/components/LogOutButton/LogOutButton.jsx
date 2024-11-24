@@ -1,6 +1,7 @@
 import styles from "./LogOutButton.module.css"
-import {useNavigate} from 'react-router-dom';
+import {useNavigate} from "react-router-dom";
 import axiosUtil from "../../util/AxiosUtil.jsx";
+import Cookies from "js-cookie";
 
 function LogOutButton() {
 
@@ -8,6 +9,8 @@ function LogOutButton() {
 
     async function handleLogOut() {
         await axiosUtil.post("auth/logout");
+        Cookies.remove("accessToken");
+        Cookies.remove("refreshToken");
         navigate("/sign-in");
     }
 

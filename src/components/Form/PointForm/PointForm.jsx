@@ -1,10 +1,9 @@
 import {useState} from "react";
-import styles from "./PointForm.module.css";
-import NumberInput from "../../Input/NumberInput.jsx";
 import PropTypes from "prop-types";
+import NumberInput from "../../Input/NumberInput.jsx";
+import styles from "./PointForm.module.css";
 
 function PointForm({pointChecker, radius, radiusChangeHandler}) {
-
     const [x, setX] = useState(0);
     const [y, setY] = useState(0);
 
@@ -24,9 +23,9 @@ function PointForm({pointChecker, radius, radiusChangeHandler}) {
                     onChange={setX}
                     id="x"
                     placeholder="Введите X"
-                    min={-3}
-                    max={3}
-                    step={1}
+                    min="-3"
+                    max="3"
+                    step="1"
                 />
             </div>
             <div className={styles["input-container"]}>
@@ -38,9 +37,9 @@ function PointForm({pointChecker, radius, radiusChangeHandler}) {
                     onChange={setY}
                     id="y"
                     placeholder="Введите Y"
-                    min={-3}
-                    max={3}
-                    step={1}
+                    min="-3"
+                    max="3"
+                    step="1"
                 />
             </div>
             <div className={styles["input-container"]}>
@@ -52,9 +51,9 @@ function PointForm({pointChecker, radius, radiusChangeHandler}) {
                     onChange={radiusChangeHandler}
                     id="r"
                     placeholder="Введите R"
-                    min={1}
-                    max={5}
-                    step={1}
+                    min="1"
+                    max="5"
+                    step="1"
                 />
             </div>
             <button className="button"

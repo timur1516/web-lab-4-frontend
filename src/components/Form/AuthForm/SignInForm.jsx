@@ -1,14 +1,15 @@
 import {useState, useEffect} from "react";
-import {useNavigate} from 'react-router-dom';
+import {useNavigate} from "react-router-dom";
 import {StatusCodes} from "http-status-codes";
 import axios from "axios";
+import Cookies from "js-cookie";
 import ErrorMessage from "../../ErrorMessage/ErrorMessage.jsx";
 import Input from "../../Input/Input.jsx";
 import PasswordInput from "../../Input/PasswordInput.jsx";
 import styles from "./AuthForm.module.css";
+import saveTokenToCookies from "../../../util/TokenUtil.jsx";
 
 function SignInForm() {
-
     const [login, setLogin] = useState("");
     const [pwd, setPwd] = useState("");
 
@@ -34,8 +35,8 @@ function SignInForm() {
         axios
             .post("auth/login", {username: login, password: pwd})
             .then((response) => {
-                localStorage.setItem("accessToken", response.data.accessToken);
-                localStorage.setItem("refreshToken", response.data.refreshToken);
+                saveTokenToCookies(response.data.accessToken, "accessToken");
+                saveTokenToCookies(response.data.refreshToken, "refreshToken");
                 navigate("/main");
             })
             .catch((error) => {
@@ -55,24 +56,26 @@ function SignInForm() {
             <ErrorMessage error={errorMsg}/>
             <div className={styles["input-container"]}>
                 <label htmlFor="login">
-                    Введите логин:
+                    Логин:
                 </label>
                 <Input
                     id="login"
                     value={login}
                     onChange={setLogin}
+                    placeholder={"Введите логин"}
                     validator={(value) => value !== ""}
                     isRequired
                 />
             </div>
             <div className={styles["input-container"]}>
                 <label htmlFor="pwd">
-                    Введите пароль:
+                    Пароль:
                 </label>
                 <PasswordInput
                     id="pwd"
                     value={pwd}
                     onChange={setPwd}
+                    placeholder={"Введите пароль"}
                     validator={(value) => value !== ""}
                     isRequired
                 />

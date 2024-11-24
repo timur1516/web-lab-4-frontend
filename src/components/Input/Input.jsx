@@ -8,7 +8,7 @@ function Input({
                    placeholder = "",
                    value,
                    onChange,
-                   validator = () => true,
+                   validator = (value) => value || true,
                    tip = "",
                    isRequired = false,
                    ...rest

@@ -1,10 +1,10 @@
-import styles from "./ErrorMessage.module.css"
 import PropTypes from "prop-types";
+import styles from "./ErrorMessage.module.css"
 
-function ErrorMessage(props) {
+function ErrorMessage({error}) {
     return (
-        props.error
-            ? <span className={styles["error-message"]}>{props.error}</span>
+        error
+            ? <span className={styles["error-message"]}>{error}</span>
             : <></>
     );
 }

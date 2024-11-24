@@ -6,9 +6,9 @@ function NumberInput({ min, max, step, ...rest }) {
 }
 
 NumberInput.propTypes = {
-    min: PropTypes.number,
-    max: PropTypes.number,
-    step: PropTypes.number,
+    min: PropTypes.string,
+    max: PropTypes.string,
+    step: PropTypes.string
 };
 
 export default NumberInput;
