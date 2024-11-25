@@ -4,6 +4,7 @@ import SignUpPage from "./pages/AuthPage/SignUpPage.jsx";
 import MainPage from "./pages/MainPage/MainPage.jsx";
 import ErrorPage from "./pages/ErrorPage/ErrorPage.jsx";
 import NotFoundPage from "./pages/NotFoundPage/NotFoundPage.jsx";
+import "./index.css"
 
 function App() {
     return (

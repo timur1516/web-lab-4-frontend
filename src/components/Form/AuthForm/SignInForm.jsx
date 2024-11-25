@@ -2,7 +2,6 @@ import {useState, useEffect} from "react";
 import {useNavigate} from "react-router-dom";
 import {StatusCodes} from "http-status-codes";
 import axios from "axios";
-import Cookies from "js-cookie";
 import ErrorMessage from "../../ErrorMessage/ErrorMessage.jsx";
 import Input from "../../Input/Input.jsx";
 import PasswordInput from "../../Input/PasswordInput.jsx";
@@ -42,11 +41,14 @@ function SignInForm() {
             .catch((error) => {
                 if (!error.response)
                     setErrorMsg("Сервер временно не доступен, попробуйте позже");
-                if (error.response?.status === StatusCodes.INTERNAL_SERVER_ERROR)
+                else
+                if (error.response.status === StatusCodes.INTERNAL_SERVER_ERROR)
                     setErrorMsg("Возникла непредвиденная ошибка на сервере");
-                if (error.response?.status === StatusCodes.NOT_FOUND)
+                else
+                if (error.response.status === StatusCodes.NOT_FOUND)
                     setErrorMsg("Пользователь с таким именем не найден");
-                if (error.response?.status === StatusCodes.UNAUTHORIZED)
+                else
+                if (error.response.status === StatusCodes.UNAUTHORIZED)
                     setErrorMsg("Неверный пароль");
             });
     }

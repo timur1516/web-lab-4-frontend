@@ -11,6 +11,10 @@
     border: none;
 }
 
+.input-field:focus{
+    outline: none;
+}
+
 .input-tip {
     background-color: rgb(40, 37, 37);
     color: white;
@@ -20,9 +24,9 @@
 }
 
 .valid-input-field {
-    border: 2px solid green;
+    border: 3px solid green;
 }
 
 .invalid-input-field {
-    border: 2px solid red;
+    border: 3px solid red;
 }

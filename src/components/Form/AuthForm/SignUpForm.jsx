@@ -6,7 +6,6 @@ import ErrorMessage from "../../ErrorMessage/ErrorMessage.jsx";
 import Input from "../../Input/Input.jsx";
 import PasswordInput from "../../Input/PasswordInput.jsx";
 import styles from "./AuthForm.module.css"
-import Cookies from "js-cookie";
 import saveTokenToCookies from "../../../util/TokenUtil.jsx";
 
 const LOGIN_REGEX = /^[a-zA-Z][a-zA-Z0-9]{3,23}$/;
@@ -47,9 +46,11 @@ function SignUpForm() {
             .catch((error) => {
                 if (!error.response)
                     setErrorMsg("Сервер временно не доступен, попробуйте позже");
-                if (error.response?.status === StatusCodes.INTERNAL_SERVER_ERROR)
+                else
+                if (error.response.status === StatusCodes.INTERNAL_SERVER_ERROR)
                     setErrorMsg("Возникла непредвиденная ошибка на сервере");
-                if (error.response?.status === StatusCodes.CONFLICT)
+                else
+                if (error.response.status === StatusCodes.CONFLICT)
                     setErrorMsg("Имя пользователя занято");
             });
     }
