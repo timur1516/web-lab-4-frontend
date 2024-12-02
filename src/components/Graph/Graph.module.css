@@ -9,3 +9,27 @@
         height: 300px;
     }
 }
+
+.graph{
+    width: 100%;
+    height: 100%;
+    border-radius: 20px;
+    background-color: #9bcfea;
+}
+
+.axis, .arrow{
+    stroke: black;
+}
+
+.label, .arrow {
+    fill: black;
+}
+
+.figure{
+    fill: #2427ec;
+    opacity: 0.5;
+}
+
+.point{
+    r: 5;
+}
