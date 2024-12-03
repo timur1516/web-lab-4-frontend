@@ -16,12 +16,17 @@ import {useEffect, useRef} from "react";
 import CleanTableButton from "../../components/CleanTableButton/CleanTableButton.jsx";
 import {useSpring, animated} from "react-spring";
 import {setIsAnimation, setShowGif} from "../../redux/AnimationSlice.js";
+import ModalWindow from "../../components/ModalWindow/ModalWindow.jsx";
+import EditProfileButton from "../../components/EditProfileButton/EditProfileButton.jsx";
+import EditProfileForm from "../../components/Form/EditProfileForm/EditProfileForm.jsx";
 
 function MainPage() {
     const dispatch = useDispatch();
     const isAnimation = useSelector(state => state.animationReducer.isAnimation);
+    const isModalWindowShow = useSelector(state => state.modalWindowReducer.showModalWindow);
     const isDataLoaded = useSelector(state => state.historyReducer.isDataLoaded);
     const drawPointRef = useRef()
+    const username = useSelector(state => state.userReducer.username);
 
     const [portalStyle, portalApi] = useSpring(() => ({
         from: {transform: "translate(-50%, -50%) scale(0)"},
@@ -112,7 +117,10 @@ function MainPage() {
                         <CleanTableButton/>
                         <ChangeDimensionButton/>
                     </div>
-                    <p>ЮЗЕР</p>
+                    <div className={styles["menu-user-container"]}>
+                        <p>{username}</p>
+                        <EditProfileButton/>
+                    </div>
                 </div>
                 <div className={styles["dashboard-container"]}>
                     <BackgroundGif
@@ -135,6 +143,14 @@ function MainPage() {
             </ContentContainer>
             <Footer/>
             {isAnimation && <Overlay style={overlayStyle}/>}
+            {isModalWindowShow &&
+                <Overlay>
+                    <ModalWindow>
+                        <EditProfileForm/>
+                    </ModalWindow>
+                </Overlay>
+            }
+            {}
         </>
     );
 }

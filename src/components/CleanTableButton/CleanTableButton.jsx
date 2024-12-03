@@ -2,12 +2,12 @@ import styles from "./CleanTableButton.module.css"
 import axiosUtil from "../../util/AxiosUtil.jsx";
 
 function CleanTableButton() {
-    async function handleLogOut() {
+    async function handleTableClean() {
         await axiosUtil.post("main/remove-points");
     }
 
     return (
-        <button className={`${styles.button} button`} onClick={handleLogOut}>
+        <button className={`${styles.button} button`} onClick={handleTableClean}>
             Очистить таблицу
         </button>
     );

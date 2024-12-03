@@ -7,6 +7,8 @@ import Input from "../../Input/Input.jsx";
 import PasswordInput from "../../Input/PasswordInput.jsx";
 import styles from "./AuthForm.module.css";
 import saveTokenToCookies from "../../../util/TokenUtil.jsx";
+import {useDispatch} from "react-redux";
+import {setUsername} from "../../../redux/UserSlice.js";
 
 function SignInForm() {
     const [login, setLogin] = useState("");
@@ -15,6 +17,8 @@ function SignInForm() {
     const navigate = useNavigate();
 
     const [errorMsg, setErrorMsg] = useState("");
+
+    const dispatch = useDispatch();
 
     useEffect(() => {
         setErrorMsg("");
@@ -36,6 +40,7 @@ function SignInForm() {
             .then((response) => {
                 saveTokenToCookies(response.data.accessToken, "accessToken");
                 saveTokenToCookies(response.data.refreshToken, "refreshToken");
+                dispatch(setUsername(login));
                 navigate("/main");
             })
             .catch((error) => {

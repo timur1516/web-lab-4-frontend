@@ -5,24 +5,25 @@ import axios from "axios";
 import ErrorMessage from "../../ErrorMessage/ErrorMessage.jsx";
 import Input from "../../Input/Input.jsx";
 import PasswordInput from "../../Input/PasswordInput.jsx";
-import styles from "./AuthForm.module.css"
+import styles from "./EditProfileForm.module.css"
 import saveTokenToCookies from "../../../util/TokenUtil.jsx";
-import {setUsername} from "../../../redux/UserSlice.js";
-import {useDispatch} from "react-redux";
+import {setShowModalWindow} from "../../../redux/ModalWindowSlice.js";
+import {useDispatch, useSelector} from "react-redux";
 
 const LOGIN_REGEX = /^[a-zA-Z][a-zA-Z0-9]{3,23}$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
 
-function SignUpForm() {
-    const [login, setLogin] = useState("");
+function EditProfileForm() {
+    const username = useSelector(state => state.userReducer.username);
+    const [login, setLogin] = useState(username);
+    const [oldPwd, setOldPwd] = useState("");
     const [pwd, setPwd] = useState("");
     const [pwdConfirm, setPwdConfirm] = useState("");
 
     const [errorMsg, setErrorMsg] = useState("");
 
-    const navigate = useNavigate()
-
     const isLoginValid = LOGIN_REGEX.test(login);
+    const isOldPwdValid = oldPwd !== "";
     const isPwdValid = PWD_REGEX.test(pwd);
     const isPwdConfirmValid = pwd === pwdConfirm && isPwdValid;
 
@@ -30,48 +31,43 @@ function SignUpForm() {
 
     useEffect(() => {
         setErrorMsg("");
-    }, [login, pwd, pwdConfirm]);
+    }, [login, pwd, pwdConfirm, oldPwd]);
 
-    async function handleSignUp(event) {
+    async function handleProfileEdit(event) {
         event.preventDefault();
 
-        if (!isLoginValid || !isPwdValid || !isPwdConfirmValid) {
+        if (!isLoginValid || !isPwdValid || !isPwdConfirmValid || !isOldPwdValid) {
             setErrorMsg("Данные не валидны");
             return;
         }
 
         axios
-            .post("auth/signup", {username: login, password: pwd})
-            .then((response) => {
-                saveTokenToCookies(response.data.accessToken, "accessToken");
-                saveTokenToCookies(response.data.refreshToken, "refreshToken");
-                dispatch(setUsername(login));
-                navigate("/main");
+            .post("auth/update-profile", {username: login, password: pwd})
+            .then(() => {
+                dispatch(setShowModalWindow(false));
             })
             .catch((error) => {
                 if (!error.response)
                     setErrorMsg("Сервер временно не доступен, попробуйте позже");
-                else
-                if (error.response.status === StatusCodes.INTERNAL_SERVER_ERROR)
+                else if (error.response.status === StatusCodes.INTERNAL_SERVER_ERROR)
                     setErrorMsg("Возникла непредвиденная ошибка на сервере");
-                else
-                if (error.response.status === StatusCodes.CONFLICT)
+                else if (error.response.status === StatusCodes.CONFLICT)
                     setErrorMsg("Имя пользователя занято");
             });
     }
 
     return (
-        <form onSubmit={handleSignUp} className={styles["form"]}>
+        <form onSubmit={handleProfileEdit} className={styles["form"]}>
             <ErrorMessage error={errorMsg}/>
             <div className={styles["input-container"]}>
                 <label htmlFor="login">
-                    Логин:
+                    Имя пользователя:
                 </label>
                 <Input
                     id="login"
                     value={login}
                     onChange={setLogin}
-                    placeholder={"Введите логин"}
+                    placeholder={"Введите имя пользователя"}
                     validator={(value) => LOGIN_REGEX.test(value)}
                     tip="4-24 символа. Первый символ - буква. Разрешены латинские буквы и цифры."
                     isRequired
@@ -79,13 +75,27 @@ function SignUpForm() {
             </div>
             <div className={styles["input-container"]}>
                 <label htmlFor="pwd">
-                    Пароль:
+                    Старый пароль:
+                </label>
+                <PasswordInput
+                    id="pwd"
+                    value={oldPwd}
+                    onChange={setOldPwd}
+                    placeholder={"Введите старый пароль"}
+                    validator={(value) => value !== ""}
+                    tip="8-24 символа. Должен включать заглавные, строчные буквы, цифры и спецсимволы (!@#$%)."
+                    isRequired
+                />
+            </div>
+            <div className={styles["input-container"]}>
+                <label htmlFor="pwd">
+                    Новый пароль:
                 </label>
                 <PasswordInput
                     id="pwd"
                     value={pwd}
                     onChange={setPwd}
-                    placeholder={"Введите пароль"}
+                    placeholder={"Введите новый пароль"}
                     validator={(value) => PWD_REGEX.test(value)}
                     tip="8-24 символа. Должен включать заглавные, строчные буквы, цифры и спецсимволы (!@#$%)."
                     isRequired
@@ -93,13 +103,13 @@ function SignUpForm() {
             </div>
             <div className={styles["input-container"]}>
                 <label htmlFor="pwdConfirm">
-                    Повторите пароль:
+                    Повторите новый пароль:
                 </label>
                 <PasswordInput
                     id="pwdConfirm"
                     value={pwdConfirm}
                     onChange={setPwdConfirm}
-                    placeholder={"Повторите пароль"}
+                    placeholder={"Повторите новый пароль"}
                     validator={(value) => value === pwd && isPwdValid}
                     tip="Пароли должны совпадать."
                     isRequired
@@ -108,12 +118,12 @@ function SignUpForm() {
             <button
                 className="button"
                 type="submit"
-                disabled={!(isLoginValid && isPwdValid && isPwdConfirmValid)}
+                disabled={!(isLoginValid && isPwdValid && isPwdConfirmValid && isOldPwdValid)}
             >
-                Зарегистрироваться
+                Сохранить
             </button>
         </form>
     );
 }
 
-export default SignUpForm;
+export default EditProfileForm;
