@@ -7,6 +7,7 @@ import PasswordInput from "../../Input/PasswordInput.jsx";
 import styles from "./EditProfileForm.module.css"
 import {setShowModalWindow} from "../../../redux/ModalWindowSlice.js";
 import {useDispatch, useSelector} from "react-redux";
+import axiosUtil from "../../../util/AxiosUtil.js";
 
 const LOGIN_REGEX = /^[a-zA-Z][a-zA-Z0-9]{3,23}$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
@@ -20,12 +21,15 @@ function EditProfileForm() {
 
     const [errorMsg, setErrorMsg] = useState("");
 
-    const isLoginValid = LOGIN_REGEX.test(login);
-    const isOldPwdValid = oldPwd !== "";
-    const isPwdValid = PWD_REGEX.test(pwd);
-    const isPwdConfirmValid = pwd === pwdConfirm && isPwdValid;
+    const validateLogin = (value) => LOGIN_REGEX.test(value);
+    const validateOldPwd = (value) => value !== "" || pwd === "" && pwdConfirm === "";
+    const validatePwd = (value) => PWD_REGEX.test(value) || pwd === "" && pwdConfirm === "" && value === "";
+    const validatePwdConfirm = (value) => pwd === value && isPwdValid;
 
-    const dispatch = useDispatch();
+    const isLoginValid = validateLogin(login);
+    const isOldPwdValid = validateOldPwd(oldPwd);
+    const isPwdValid = validatePwd(pwd);
+    const isPwdConfirmValid = validatePwdConfirm(pwdConfirm);
 
     useEffect(() => {
         setErrorMsg("");
@@ -41,19 +45,40 @@ function EditProfileForm() {
             return;
         }
 
-        axios
-            .post("auth/update-profile", {username: login, password: pwd})
-            .then(() => {
-                dispatch(setShowModalWindow(false));
-            })
-            .catch((error) => {
-                if (!error.response)
-                    setErrorMsg("Сервер временно не доступен, попробуйте позже");
-                else if (error.response.status === StatusCodes.INTERNAL_SERVER_ERROR)
-                    setErrorMsg("Возникла непредвиденная ошибка на сервере");
-                else if (error.response.status === StatusCodes.CONFLICT)
-                    setErrorMsg("Имя пользователя занято");
-            });
+        if(login !== username) {
+            axiosUtil
+                .post("main/update-username", {username: login})
+                .then(() => {
+                    setErrorMsg("");
+                    setOldPwd("");
+                    setErrorMsg("");
+                    setOldPwd("");
+                })
+                .catch((error) => {
+                    if (!error.response)
+                        setErrorMsg("Сервер временно не доступен, попробуйте позже");
+                    else if (error.response.status === StatusCodes.INTERNAL_SERVER_ERROR)
+                        setErrorMsg("Возникла непредвиденная ошибка на сервере");
+                    else if (error.response.status === StatusCodes.CONFLICT)
+                        setErrorMsg("Имя пользователя занято");
+                });
+        }
+        if(pwd !== "") {
+            axiosUtil
+                .post("main/update-password", {password: pwd})
+                .then(() => {
+                    setErrorMsg("");
+                    setOldPwd("");
+                    setErrorMsg("");
+                    setOldPwd("");
+                })
+                .catch((error) => {
+                    if (!error.response)
+                        setErrorMsg("Сервер временно не доступен, попробуйте позже");
+                    else if (error.response.status === StatusCodes.INTERNAL_SERVER_ERROR)
+                        setErrorMsg("Возникла непредвиденная ошибка на сервере");
+                });
+        }
     }
 
     return (
@@ -68,7 +93,7 @@ function EditProfileForm() {
                     value={login}
                     onChange={setLogin}
                     placeholder={"Введите имя пользователя"}
-                    validator={(value) => LOGIN_REGEX.test(value)}
+                    validator={validateLogin}
                     tip="4-24 символа. Первый символ - буква. Разрешены латинские буквы и цифры."
                     isRequired
                 />
@@ -82,7 +107,7 @@ function EditProfileForm() {
                     value={oldPwd}
                     onChange={setOldPwd}
                     placeholder={"Введите старый пароль"}
-                    validator={(value) => value !== ""}
+                    validator={validateOldPwd}
                     tip="8-24 символа. Должен включать заглавные, строчные буквы, цифры и спецсимволы (!@#$%)."
                     isRequired
                 />
@@ -96,7 +121,7 @@ function EditProfileForm() {
                     value={pwd}
                     onChange={setPwd}
                     placeholder={"Введите новый пароль"}
-                    validator={(value) => PWD_REGEX.test(value)}
+                    validator={validatePwd}
                     tip="8-24 символа. Должен включать заглавные, строчные буквы, цифры и спецсимволы (!@#$%)."
                     isRequired
                 />
@@ -110,7 +135,7 @@ function EditProfileForm() {
                     value={pwdConfirm}
                     onChange={setPwdConfirm}
                     placeholder={"Повторите новый пароль"}
-                    validator={(value) => value === pwd && isPwdValid}
+                    validator={validatePwdConfirm}
                     tip="Пароли должны совпадать."
                     isRequired
                 />
