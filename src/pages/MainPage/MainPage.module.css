@@ -4,6 +4,29 @@
     justify-content: center;
 }
 
+.menu-container{
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    align-items: center;
+}
+
+.menu-control-container{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.dashboard-container{
+    display: flex;
+    position: relative;
+}
+
 .graph-form-container {
     display: flex;
     flex-direction: row;
@@ -15,6 +38,7 @@
     border-radius: 20px;
     border: 1px solid blue;
     box-shadow: 0 0 10px 10px blue;
+    z-index: 10;
 }
 
 @media(max-width: 800px) {

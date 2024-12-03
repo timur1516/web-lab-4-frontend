@@ -1,7 +1,10 @@
 import styles from "./HistoryTable.module.css";
 import PropTypes from "prop-types";
+import {useSelector} from "react-redux";
 
-function HistoryTable({history}) {
+function HistoryTable() {
+    const history = useSelector((state) => state.historyReducer.history);
+
     return (
         <table id="history-table">
             <thead>
@@ -42,7 +45,7 @@ function HistoryTable({history}) {
                             {new Date(entry.reqTime).toLocaleTimeString()}
                         </span>
                         <span className={styles["sm-view"]}>
-                            {new Date(entry.reqTime).toLocaleTimeString([], {hour: "2-digit", minute:"2-digit"})}
+                            {new Date(entry.reqTime).toLocaleTimeString([], {hour: "2-digit", minute: "2-digit"})}
                         </span>
                     </td>
                     <td>{entry.procTime} мкс</td>

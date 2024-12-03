@@ -1,10 +1,13 @@
 import {forwardRef, Fragment, useEffect, useImperativeHandle, useRef, useState} from "react";
 import styles from "./Graph.module.css";
 import PropTypes from "prop-types";
+import {useSelector} from "react-redux";
 
-const Graph = forwardRef(({pointChecker, radius, history}, ref) => {
+const Graph = forwardRef(({pointChecker}, ref) => {
     const svgRef = useRef(null);
     const isDataLoaded = useRef(false);
+    const radius = useSelector((state) => state.radiusReducer.radius);
+    const history = useSelector((state) => state.historyReducer.history);
 
     function handleRChange() {
         setRSerif(() => radius ? radius : "R");
@@ -78,10 +81,8 @@ const Graph = forwardRef(({pointChecker, radius, history}, ref) => {
     }
 
     useEffect(() => {
-        if (isDataLoaded.current || history.length === 0) return;
-        redrawPoints();
-        isDataLoaded.current = true;
-    }, [history]);
+        if (isDataLoaded.current) redrawPoints();
+    }, [isDataLoaded]);
 
     useImperativeHandle(ref, () => ({drawPoint}));
 

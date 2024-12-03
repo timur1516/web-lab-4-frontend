@@ -2,10 +2,19 @@ import {useState} from "react";
 import PropTypes from "prop-types";
 import NumberInput from "../../Input/NumberInput.jsx";
 import styles from "./PointForm.module.css";
+import {useDispatch, useSelector} from "react-redux";
+import {setRadius} from "../../../redux/RadiusSlice.js";
 
-function PointForm({pointChecker, radius, radiusChangeHandler}) {
+function PointForm({pointChecker}) {
     const [x, setX] = useState(0);
     const [y, setY] = useState(0);
+
+    const radius = useSelector((state) => state.radiusReducer.radius);
+    const dispatch = useDispatch();
+
+    function handleRadiusChange(value) {
+        dispatch(setRadius(Number(value)));
+    }
 
     function submitForm(event) {
         event.preventDefault();
@@ -48,7 +57,7 @@ function PointForm({pointChecker, radius, radiusChangeHandler}) {
                 </label>
                 <NumberInput
                     value={radius}
-                    onChange={radiusChangeHandler}
+                    onChange={handleRadiusChange}
                     id="r"
                     placeholder="Введите R"
                     min="1"
