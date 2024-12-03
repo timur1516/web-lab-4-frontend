@@ -6,7 +6,7 @@ import ErrorMessage from "../../ErrorMessage/ErrorMessage.jsx";
 import Input from "../../Input/Input.jsx";
 import PasswordInput from "../../Input/PasswordInput.jsx";
 import styles from "./AuthForm.module.css";
-import saveTokenToCookies from "../../../util/TokenUtil.jsx";
+import saveTokenToCookies from "../../../util/TokenUtil.js";
 import {useDispatch} from "react-redux";
 import {setUsername} from "../../../redux/UserSlice.js";
 

@@ -1,20 +1,19 @@
 import styles from "./EditProfileButton.module.css"
-import {useDispatch} from "react-redux";
-import {setIsAnimation} from "../../redux/AnimationSlice.js";
-import {setShowModalWindow} from "../../redux/ModalWindowSlice.js";
+import {useNavigate} from "react-router-dom";
+import {useSelector} from "react-redux";
 
 function EditProfileButton() {
 
-    const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     function handleEditProfileClick() {
-        dispatch(setShowModalWindow(true));
+        navigate("/profile");
     }
 
+    const avatar = useSelector(state => state.userReducer.avatar);
+
     return (
-        <button className={`${styles.button} button`} onClick={handleEditProfileClick}>
-            АВАТАРКА
-        </button>
+        <img src={avatar} alt="аватарка" className={`${styles.button}`} onClick={handleEditProfileClick}/>
     );
 }
 

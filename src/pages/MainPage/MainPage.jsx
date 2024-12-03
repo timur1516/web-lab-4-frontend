@@ -2,7 +2,7 @@ import Graph from "../../components/Graph/Graph.jsx";
 import HistoryTable from "../../components/HistoryTable/HistoryTable.jsx";
 import LogOutButton from "../../components/LogOutButton/LogOutButton.jsx";
 import PointForm from "../../components/Form/PointForm/PointForm.jsx";
-import axiosUtil from "../../util/AxiosUtil.jsx";
+import axiosUtil from "../../util/AxiosUtil.js";
 import Header from "../../components/Layout/Header.jsx";
 import ContentContainer from "../../components/Layout/ContentContainer.jsx";
 import Footer from "../../components/Layout/Footer.jsx";
@@ -11,22 +11,21 @@ import BackgroundGif from "../../components/BackgroundGif/BackgroundGif.jsx";
 import {useDispatch, useSelector} from "react-redux";
 import ChangeDimensionButton from "../../components/ChangeDimensionButton/ChangeDimensionButton.jsx";
 import Overlay from "../../components/Overlay/Overlay.jsx";
-import {addToHistory, setHistory, setIsDataLoaded} from "../../redux/HistorySlice.js";
+import {addToHistory} from "../../redux/HistorySlice.js";
 import {useEffect, useRef} from "react";
 import CleanTableButton from "../../components/CleanTableButton/CleanTableButton.jsx";
 import {useSpring, animated} from "react-spring";
 import {setIsAnimation, setShowGif} from "../../redux/AnimationSlice.js";
-import ModalWindow from "../../components/ModalWindow/ModalWindow.jsx";
 import EditProfileButton from "../../components/EditProfileButton/EditProfileButton.jsx";
-import EditProfileForm from "../../components/Form/EditProfileForm/EditProfileForm.jsx";
+import {loadPoints, loadUserData} from "../../util/ServerDataLoadUtil.js";
 
 function MainPage() {
     const dispatch = useDispatch();
     const isAnimation = useSelector(state => state.animationReducer.isAnimation);
-    const isModalWindowShow = useSelector(state => state.modalWindowReducer.showModalWindow);
     const isDataLoaded = useSelector(state => state.historyReducer.isDataLoaded);
     const drawPointRef = useRef()
     const username = useSelector(state => state.userReducer.username);
+    const avatar = useSelector(state => state.userReducer.avatar);
 
     const [portalStyle, portalApi] = useSpring(() => ({
         from: {transform: "translate(-50%, -50%) scale(0)"},
@@ -94,16 +93,10 @@ function MainPage() {
             });
     }
 
-    function loadPoints() {
-        axiosUtil
-            .get("main/get-points")
-            .then((response) => {
-                dispatch(setHistory(response.data));
-                dispatch(setIsDataLoaded(true));
-            });
-    }
-
-    useEffect(loadPoints, [loadPoints]);
+    useEffect(() => {
+        loadUserData(dispatch);
+        loadPoints(dispatch);
+    }, []);
 
     if (!isDataLoaded) return (<></>);
 
@@ -143,14 +136,6 @@ function MainPage() {
             </ContentContainer>
             <Footer/>
             {isAnimation && <Overlay style={overlayStyle}/>}
-            {isModalWindowShow &&
-                <Overlay>
-                    <ModalWindow>
-                        <EditProfileForm/>
-                    </ModalWindow>
-                </Overlay>
-            }
-            {}
         </>
     );
 }

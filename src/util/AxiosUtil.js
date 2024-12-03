@@ -1,7 +1,7 @@
 import axios from "axios";
 import {StatusCodes} from "http-status-codes";
 import Cookies from "js-cookie";
-import saveTokenToCookies from "./TokenUtil.jsx";
+import saveTokenToCookies from "./TokenUtil.js";
 
 axios.defaults.baseURL = "http://localhost:8080/web4_backend-1.0-SNAPSHOT/api";
 

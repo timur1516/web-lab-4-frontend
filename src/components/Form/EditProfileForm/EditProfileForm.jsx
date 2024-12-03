@@ -1,12 +1,10 @@
 import {useState, useEffect} from "react";
-import {useNavigate} from "react-router-dom";
 import {StatusCodes} from "http-status-codes";
 import axios from "axios";
 import ErrorMessage from "../../ErrorMessage/ErrorMessage.jsx";
 import Input from "../../Input/Input.jsx";
 import PasswordInput from "../../Input/PasswordInput.jsx";
 import styles from "./EditProfileForm.module.css"
-import saveTokenToCookies from "../../../util/TokenUtil.jsx";
 import {setShowModalWindow} from "../../../redux/ModalWindowSlice.js";
 import {useDispatch, useSelector} from "react-redux";
 
@@ -32,6 +30,8 @@ function EditProfileForm() {
     useEffect(() => {
         setErrorMsg("");
     }, [login, pwd, pwdConfirm, oldPwd]);
+
+    useEffect(() => {setLogin(username)}, [username]);
 
     async function handleProfileEdit(event) {
         event.preventDefault();
@@ -74,11 +74,11 @@ function EditProfileForm() {
                 />
             </div>
             <div className={styles["input-container"]}>
-                <label htmlFor="pwd">
+                <label htmlFor="oldPwd">
                     Старый пароль:
                 </label>
                 <PasswordInput
-                    id="pwd"
+                    id="oldPwd"
                     value={oldPwd}
                     onChange={setOldPwd}
                     placeholder={"Введите старый пароль"}

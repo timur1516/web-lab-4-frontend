@@ -5,6 +5,7 @@ import MainPage from "./pages/MainPage/MainPage.jsx";
 import ErrorPage from "./pages/ErrorPage/ErrorPage.jsx";
 import NotFoundPage from "./pages/NotFoundPage/NotFoundPage.jsx";
 import "./index.css"
+import ProfilePage from "./pages/ProfilePage/ProfilePage.jsx";
 
 function App() {
     return (
@@ -15,6 +16,7 @@ function App() {
                     <Route path="/sign-in" element={<SignInPage/>}/>
                     <Route path="/sign-up" element={<SignUpPage/>}/>
                     <Route path="/main" element={<MainPage/>}/>
+                    <Route path="/profile" element={<ProfilePage/>}/>
                     <Route path="/error" element={<ErrorPage/>}/>
                     <Route path="*" element={<NotFoundPage/>}/>
                 </Routes>

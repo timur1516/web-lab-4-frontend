@@ -6,9 +6,10 @@ import ErrorMessage from "../../ErrorMessage/ErrorMessage.jsx";
 import Input from "../../Input/Input.jsx";
 import PasswordInput from "../../Input/PasswordInput.jsx";
 import styles from "./AuthForm.module.css"
-import saveTokenToCookies from "../../../util/TokenUtil.jsx";
+import saveTokenToCookies from "../../../util/TokenUtil.js";
 import {setUsername} from "../../../redux/UserSlice.js";
 import {useDispatch} from "react-redux";
+import {generateAvatar, sendAvatarToServer} from "../../../util/AvatarUtil.js";
 
 const LOGIN_REGEX = /^[a-zA-Z][a-zA-Z0-9]{3,23}$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
@@ -45,7 +46,8 @@ function SignUpForm() {
             .then((response) => {
                 saveTokenToCookies(response.data.accessToken, "accessToken");
                 saveTokenToCookies(response.data.refreshToken, "refreshToken");
-                dispatch(setUsername(login));
+                const avatar = generateAvatar(login, 100);
+                sendAvatarToServer(avatar, "svg+xml");
                 navigate("/main");
             })
             .catch((error) => {
