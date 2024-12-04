@@ -1,24 +1,15 @@
-import {forwardRef, Fragment, useEffect, useImperativeHandle, useRef, useState} from "react";
+import {Fragment, useEffect, useRef, useState} from "react";
 import styles from "./Graph.module.css";
 import PropTypes from "prop-types";
 import {useSelector} from "react-redux";
 
-const Graph = forwardRef(({pointChecker}, ref) => {
+function Graph({pointChecker}) {
     const svgRef = useRef(null);
-    const isDataLoaded = useRef(false);
     const radius = useSelector((state) => state.radiusReducer.radius);
     const history = useSelector((state) => state.historyReducer.history);
 
-    function handleRChange() {
-        setRSerif(() => radius > 0 ? radius : "R");
-        setRDiv2Serif(() => radius > 0 ? radius / 2 : "R/2");
-        redrawPoints();
-    }
-
     //TODO: remove hardcode
     const length = 350;
-
-    useEffect( handleRChange, [radius]);
 
     const [RSerif, setRSerif] = useState("R");
     const [RDiv2Serif, setRDiv2Serif] = useState("R/2");
@@ -34,26 +25,8 @@ const Graph = forwardRef(({pointChecker}, ref) => {
     const labelData = [{c: 'X', dx: 0, dy: 4 * mcr, cx: 1, cy: 0}, {c: 'Y', dx: mcr, dy: mcr, cx: 0, cy: 1}];
     const labelValues = ['-' + RSerif, '-' + RDiv2Serif, RDiv2Serif, RSerif];
 
-    function handleGraphClick(event) {
-        if(radius <= 0) return;
-        const plane = svgRef.current;
-
-        let point = plane.createSVGPoint();
-
-        point.x = event.clientX;
-        point.y = event.clientY;
-
-        point = point.matrixTransform(plane.getScreenCTM().inverse());
-
-        const scale = radius / (2 * seg);
-
-        point.x *= scale;
-        point.y *= -scale;
-        pointChecker(point.x, point.y, radius);
-    }
-
     function drawPoint(x, y, hit) {
-        if(radius <= 0) return;
+        if (radius <= 0) return;
         const svg = svgRef.current;
         if (hit !== null && svg) {
             const scale = radius / (2 * seg);
@@ -82,11 +55,35 @@ const Graph = forwardRef(({pointChecker}, ref) => {
         });
     }
 
-    useEffect(() => {
-        if (isDataLoaded.current) redrawPoints();
-    }, [isDataLoaded]);
+    function handleRChange() {
+        setRSerif(() => radius > 0 ? radius : "R");
+        setRDiv2Serif(() => radius > 0 ? radius / 2 : "R/2");
+        redrawPoints();
+    }
 
-    useImperativeHandle(ref, () => ({drawPoint}));
+    function handleGraphClick(event) {
+        if (radius <= 0) return;
+        const plane = svgRef.current;
+
+        let point = plane.createSVGPoint();
+
+        point.x = event.clientX;
+        point.y = event.clientY;
+
+        point = point.matrixTransform(plane.getScreenCTM().inverse());
+
+        const scale = radius / (2 * seg);
+
+        point.x *= scale;
+        point.y *= -scale;
+        pointChecker(point.x, point.y, radius);
+    }
+
+    useEffect(() => {
+        redrawPoints();
+    }, [history]);
+
+    useEffect(handleRChange, [radius]);
 
     return (
         <div className={styles["graph-container"]}>
@@ -150,14 +147,12 @@ const Graph = forwardRef(({pointChecker}, ref) => {
             </svg>
         </div>
     );
-});
+}
 
 Graph.propTypes = {
     pointChecker: PropTypes.func,
     radius: PropTypes.number,
     history: PropTypes.array
 }
-
-Graph.displayName = "Graph";
 
 export default Graph;

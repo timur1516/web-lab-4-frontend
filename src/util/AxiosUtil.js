@@ -3,7 +3,7 @@ import {StatusCodes} from "http-status-codes";
 import Cookies from "js-cookie";
 import saveTokenToCookies from "./TokenUtil.js";
 
-axios.defaults.baseURL = "http://localhost:8080/web4_backend-1.0-SNAPSHOT/api";
+axios.defaults.baseURL = "http://localhost:8080/api";
 
 const axiosUtil = axios.create();
 

@@ -11,25 +11,21 @@ import BackgroundGif from "../../components/BackgroundGif/BackgroundGif.jsx";
 import {useDispatch, useSelector} from "react-redux";
 import ChangeDimensionButton from "../../components/ChangeDimensionButton/ChangeDimensionButton.jsx";
 import Overlay from "../../components/Overlay/Overlay.jsx";
-import {addToHistory} from "../../redux/HistorySlice.js";
-import {useEffect, useRef} from "react";
+import {addToHistory, setIsDataLoaded} from "../../redux/HistorySlice.js";
+import {useEffect} from "react";
 import CleanTableButton from "../../components/CleanTableButton/CleanTableButton.jsx";
 import {useSpring, animated} from "react-spring";
 import {setIsAnimation, setShowGif} from "../../redux/AnimationSlice.js";
 import EditProfileButton from "../../components/EditProfileButton/EditProfileButton.jsx";
 import {loadPoints, loadUserData} from "../../util/ServerDataLoadUtil.js";
 import saveTokenToCookies from "../../util/TokenUtil.js";
-import {useNavigate} from "react-router-dom";
 import {generateAvatar, sendAvatarToServer} from "../../util/AvatarUtil.js";
-import {setAvatar} from "../../redux/UserSlice.js";
 
 function MainPage() {
     const dispatch = useDispatch();
     const isAnimation = useSelector(state => state.animationReducer.isAnimation);
     const isDataLoaded = useSelector(state => state.historyReducer.isDataLoaded);
-    const drawPointRef = useRef()
     const username = useSelector(state => state.userReducer.username);
-    const avatar = useSelector(state => state.userReducer.avatar);
 
     const [portalStyle, portalApi] = useSpring(() => ({
         from: {transform: "translate(-50%, -50%) scale(0)"},
@@ -86,6 +82,7 @@ function MainPage() {
     }
 
     async function changeUser() {
+        dispatch(setIsDataLoaded(false));
         const response = await axiosUtil.post("auth/change-user");
         saveTokenToCookies(response.data.accessToken, "accessToken");
         saveTokenToCookies(response.data.refreshToken, "refreshToken");
@@ -94,20 +91,21 @@ function MainPage() {
             await sendAvatarToServer(newAvatar, "svg+xml");
             await loadUserData(dispatch);
         }
+        await loadPoints(dispatch);
+        dispatch(setIsDataLoaded(true));
     }
-
-    useEffect(() => {
-        if (isAnimation) animatePortal();
-    }, [isAnimation]);
 
     function checkPoint(x, y, r) {
         axiosUtil
             .post("main/check-point", {x, y, r})
             .then((response) => {
                 dispatch(addToHistory(response.data));
-                drawPointRef.current.drawPoint(x, y, response.data.hit);
             });
     }
+
+    useEffect(() => {
+        if (isAnimation) animatePortal();
+    }, [isAnimation]);
 
     useEffect(() => {
         loadUserData(dispatch);
@@ -142,7 +140,6 @@ function MainPage() {
                         />
                         <Graph
                             pointChecker={checkPoint}
-                            ref={drawPointRef}
                         />
                     </animated.div>
                 </div>
