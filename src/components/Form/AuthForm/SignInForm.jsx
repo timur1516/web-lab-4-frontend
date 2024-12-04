@@ -3,12 +3,10 @@ import {useNavigate} from "react-router-dom";
 import {StatusCodes} from "http-status-codes";
 import axios from "axios";
 import ErrorMessage from "../../ErrorMessage/ErrorMessage.jsx";
-import Input from "../../Input/Input.jsx";
-import PasswordInput from "../../Input/PasswordInput.jsx";
+import Input from "../../UserInput/Input/Input.jsx";
+import PasswordInput from "../../UserInput/Input/PasswordInput.jsx";
 import styles from "./AuthForm.module.css";
 import saveTokenToCookies from "../../../util/TokenUtil.js";
-import {useDispatch} from "react-redux";
-import {setUsername} from "../../../redux/UserSlice.js";
 
 function SignInForm() {
     const [login, setLogin] = useState("");
@@ -18,19 +16,18 @@ function SignInForm() {
 
     const [errorMsg, setErrorMsg] = useState("");
 
-    const dispatch = useDispatch();
-
     useEffect(() => {
         setErrorMsg("");
     }, [login, pwd]);
 
-    const isLoginValid = login !== "";
-    const isPwdValid = pwd !== "";
+    const validateLogin = (value) => value !== "";
+    const validatePwd = (value) => value !== "";
+
 
     async function handleSignIn(event) {
         event.preventDefault();
 
-        if (!isLoginValid || !isPwdValid) {
+        if (!validateLogin(login) || !validatePwd(pwd)) {
             setErrorMsg("Данные не валидны");
             return;
         }
@@ -40,20 +37,16 @@ function SignInForm() {
             .then((response) => {
                 saveTokenToCookies(response.data.accessToken, "accessToken");
                 saveTokenToCookies(response.data.refreshToken, "refreshToken");
-                dispatch(setUsername(login));
                 navigate("/main");
             })
             .catch((error) => {
                 if (!error.response)
                     setErrorMsg("Сервер временно не доступен, попробуйте позже");
-                else
-                if (error.response.status === StatusCodes.INTERNAL_SERVER_ERROR)
+                else if (error.response.status === StatusCodes.INTERNAL_SERVER_ERROR)
                     setErrorMsg("Возникла непредвиденная ошибка на сервере");
-                else
-                if (error.response.status === StatusCodes.NOT_FOUND)
+                else if (error.response.status === StatusCodes.NOT_FOUND)
                     setErrorMsg("Пользователь с таким именем не найден");
-                else
-                if (error.response.status === StatusCodes.UNAUTHORIZED)
+                else if (error.response.status === StatusCodes.UNAUTHORIZED)
                     setErrorMsg("Неверный пароль");
             });
     }
@@ -70,7 +63,7 @@ function SignInForm() {
                     value={login}
                     onChange={setLogin}
                     placeholder={"Введите логин"}
-                    validator={(value) => value !== ""}
+                    validator={validateLogin}
                     isRequired
                 />
             </div>
@@ -83,14 +76,14 @@ function SignInForm() {
                     value={pwd}
                     onChange={setPwd}
                     placeholder={"Введите пароль"}
-                    validator={(value) => value !== ""}
+                    validator={validatePwd}
                     isRequired
                 />
             </div>
             <button
                 className="button"
                 type="submit"
-                disabled={!(isLoginValid && isPwdValid)}
+                disabled={!(validateLogin(login) && validatePwd(pwd))}
             >
                 Войти
             </button>

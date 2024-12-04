@@ -10,15 +10,15 @@ const Graph = forwardRef(({pointChecker}, ref) => {
     const history = useSelector((state) => state.historyReducer.history);
 
     function handleRChange() {
-        setRSerif(() => radius ? radius : "R");
-        setRDiv2Serif(() => radius ? radius / 2 : "R/2");
+        setRSerif(() => radius > 0 ? radius : "R");
+        setRDiv2Serif(() => radius > 0 ? radius / 2 : "R/2");
         redrawPoints();
     }
 
     //TODO: remove hardcode
     const length = 350;
 
-    useEffect(handleRChange, [radius]);
+    useEffect( handleRChange, [radius]);
 
     const [RSerif, setRSerif] = useState("R");
     const [RDiv2Serif, setRDiv2Serif] = useState("R/2");
@@ -35,6 +35,7 @@ const Graph = forwardRef(({pointChecker}, ref) => {
     const labelValues = ['-' + RSerif, '-' + RDiv2Serif, RDiv2Serif, RSerif];
 
     function handleGraphClick(event) {
+        if(radius <= 0) return;
         const plane = svgRef.current;
 
         let point = plane.createSVGPoint();
@@ -52,6 +53,7 @@ const Graph = forwardRef(({pointChecker}, ref) => {
     }
 
     function drawPoint(x, y, hit) {
+        if(radius <= 0) return;
         const svg = svgRef.current;
         if (hit !== null && svg) {
             const scale = radius / (2 * seg);

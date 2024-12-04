@@ -2,11 +2,10 @@ import {useState, useEffect} from "react";
 import {StatusCodes} from "http-status-codes";
 import axios from "axios";
 import ErrorMessage from "../../ErrorMessage/ErrorMessage.jsx";
-import Input from "../../Input/Input.jsx";
-import PasswordInput from "../../Input/PasswordInput.jsx";
+import Input from "../../UserInput/Input/Input.jsx";
+import PasswordInput from "../../UserInput/Input/PasswordInput.jsx";
 import styles from "./EditProfileForm.module.css"
-import {setShowModalWindow} from "../../../redux/ModalWindowSlice.js";
-import {useDispatch, useSelector} from "react-redux";
+import {useSelector} from "react-redux";
 import axiosUtil from "../../../util/AxiosUtil.js";
 
 const LOGIN_REGEX = /^[a-zA-Z][a-zA-Z0-9]{3,23}$/;
@@ -24,12 +23,7 @@ function EditProfileForm() {
     const validateLogin = (value) => LOGIN_REGEX.test(value);
     const validateOldPwd = (value) => value !== "" || pwd === "" && pwdConfirm === "";
     const validatePwd = (value) => PWD_REGEX.test(value) || pwd === "" && pwdConfirm === "" && value === "";
-    const validatePwdConfirm = (value) => pwd === value && isPwdValid;
-
-    const isLoginValid = validateLogin(login);
-    const isOldPwdValid = validateOldPwd(oldPwd);
-    const isPwdValid = validatePwd(pwd);
-    const isPwdConfirmValid = validatePwdConfirm(pwdConfirm);
+    const validatePwdConfirm = (value) => pwd === value && validatePwd(pwd);
 
     useEffect(() => {
         setErrorMsg("");
@@ -40,7 +34,7 @@ function EditProfileForm() {
     async function handleProfileEdit(event) {
         event.preventDefault();
 
-        if (!isLoginValid || !isPwdValid || !isPwdConfirmValid || !isOldPwdValid) {
+        if (!validateLogin(login) || !validatePwd(pwd) || !validatePwdConfirm(pwdConfirm) || !validateOldPwd(oldPwd)) {
             setErrorMsg("Данные не валидны");
             return;
         }
@@ -143,7 +137,7 @@ function EditProfileForm() {
             <button
                 className="button"
                 type="submit"
-                disabled={!(isLoginValid && isPwdValid && isPwdConfirmValid && isOldPwdValid)}
+                disabled={!validateLogin(login) || !validatePwd(pwd) || !validatePwdConfirm(pwdConfirm) || !validateOldPwd(oldPwd)}
             >
                 Сохранить
             </button>

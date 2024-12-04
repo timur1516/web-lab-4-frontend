@@ -3,12 +3,10 @@ import {useNavigate} from "react-router-dom";
 import {StatusCodes} from "http-status-codes";
 import axios from "axios";
 import ErrorMessage from "../../ErrorMessage/ErrorMessage.jsx";
-import Input from "../../Input/Input.jsx";
-import PasswordInput from "../../Input/PasswordInput.jsx";
+import Input from "../../UserInput/Input/Input.jsx";
+import PasswordInput from "../../UserInput/Input/PasswordInput.jsx";
 import styles from "./AuthForm.module.css"
 import saveTokenToCookies from "../../../util/TokenUtil.js";
-import {setUsername} from "../../../redux/UserSlice.js";
-import {useDispatch} from "react-redux";
 import {generateAvatar, sendAvatarToServer} from "../../../util/AvatarUtil.js";
 
 const LOGIN_REGEX = /^[a-zA-Z][a-zA-Z0-9]{3,23}$/;
@@ -23,11 +21,9 @@ function SignUpForm() {
 
     const navigate = useNavigate()
 
-    const isLoginValid = LOGIN_REGEX.test(login);
-    const isPwdValid = PWD_REGEX.test(pwd);
-    const isPwdConfirmValid = pwd === pwdConfirm && isPwdValid;
-
-    const dispatch = useDispatch();
+    const validateLogin = (value) => LOGIN_REGEX.test(value);
+    const validatePwd = (value) => PWD_REGEX.test(value);
+    const validatePwdConfirm = (value) => pwd === value && validatePwd(pwd);
 
     useEffect(() => {
         setErrorMsg("");
@@ -36,30 +32,26 @@ function SignUpForm() {
     async function handleSignUp(event) {
         event.preventDefault();
 
-        if (!isLoginValid || !isPwdValid || !isPwdConfirmValid) {
+        if (!validateLogin(login) || !validatePwd(pwd) || !validatePwdConfirm(pwdConfirm)) {
             setErrorMsg("Данные не валидны");
             return;
         }
 
-        axios
-            .post("auth/signup", {username: login, password: pwd})
-            .then((response) => {
-                saveTokenToCookies(response.data.accessToken, "accessToken");
-                saveTokenToCookies(response.data.refreshToken, "refreshToken");
-                const avatar = generateAvatar(login, 100);
-                sendAvatarToServer(avatar, "svg+xml");
-                navigate("/main");
-            })
-            .catch((error) => {
-                if (!error.response)
-                    setErrorMsg("Сервер временно не доступен, попробуйте позже");
-                else
-                if (error.response.status === StatusCodes.INTERNAL_SERVER_ERROR)
-                    setErrorMsg("Возникла непредвиденная ошибка на сервере");
-                else
-                if (error.response.status === StatusCodes.CONFLICT)
-                    setErrorMsg("Имя пользователя занято");
-            });
+        try {
+            const response = await axios.post("auth/signup", {username: login, password: pwd});
+            saveTokenToCookies(response.data.accessToken, "accessToken");
+            saveTokenToCookies(response.data.refreshToken, "refreshToken");
+            const avatar = generateAvatar(login);
+            await sendAvatarToServer(avatar, "svg+xml");
+            navigate("/main");
+        } catch (error) {
+            if (!error.response)
+                setErrorMsg("Сервер временно не доступен, попробуйте позже");
+            else if (error.response.status === StatusCodes.INTERNAL_SERVER_ERROR)
+                setErrorMsg("Возникла непредвиденная ошибка на сервере");
+            else if (error.response.status === StatusCodes.CONFLICT)
+                setErrorMsg("Имя пользователя занято");
+        }
     }
 
     return (
@@ -74,7 +66,7 @@ function SignUpForm() {
                     value={login}
                     onChange={setLogin}
                     placeholder={"Введите логин"}
-                    validator={(value) => LOGIN_REGEX.test(value)}
+                    validator={validateLogin}
                     tip="4-24 символа. Первый символ - буква. Разрешены латинские буквы и цифры."
                     isRequired
                 />
@@ -88,7 +80,7 @@ function SignUpForm() {
                     value={pwd}
                     onChange={setPwd}
                     placeholder={"Введите пароль"}
-                    validator={(value) => PWD_REGEX.test(value)}
+                    validator={validatePwd}
                     tip="8-24 символа. Должен включать заглавные, строчные буквы, цифры и спецсимволы (!@#$%)."
                     isRequired
                 />
@@ -102,7 +94,7 @@ function SignUpForm() {
                     value={pwdConfirm}
                     onChange={setPwdConfirm}
                     placeholder={"Повторите пароль"}
-                    validator={(value) => value === pwd && isPwdValid}
+                    validator={validatePwdConfirm}
                     tip="Пароли должны совпадать."
                     isRequired
                 />
@@ -110,7 +102,7 @@ function SignUpForm() {
             <button
                 className="button"
                 type="submit"
-                disabled={!(isLoginValid && isPwdValid && isPwdConfirmValid)}
+                disabled={!(validateLogin(login) && validatePwd(pwd) && validatePwdConfirm(pwdConfirm))}
             >
                 Зарегистрироваться
             </button>

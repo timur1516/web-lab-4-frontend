@@ -18,6 +18,10 @@ import {useSpring, animated} from "react-spring";
 import {setIsAnimation, setShowGif} from "../../redux/AnimationSlice.js";
 import EditProfileButton from "../../components/EditProfileButton/EditProfileButton.jsx";
 import {loadPoints, loadUserData} from "../../util/ServerDataLoadUtil.js";
+import saveTokenToCookies from "../../util/TokenUtil.js";
+import {useNavigate} from "react-router-dom";
+import {generateAvatar, sendAvatarToServer} from "../../util/AvatarUtil.js";
+import {setAvatar} from "../../redux/UserSlice.js";
 
 function MainPage() {
     const dispatch = useDispatch();
@@ -67,7 +71,8 @@ function MainPage() {
         });
     }
 
-    function resetAnimation() {
+    async function resetAnimation() {
+        await changeUser();
         dispatch(setShowGif(false));
         portalApi.set({transform: "translate(-50%, -50%) scale(0)"});
         dashboardApi.set({transform: "scale(1)"});
@@ -78,6 +83,17 @@ function MainPage() {
                 dispatch(setIsAnimation(false));
             }
         });
+    }
+
+    async function changeUser() {
+        const response = await axiosUtil.post("auth/change-user");
+        saveTokenToCookies(response.data.accessToken, "accessToken");
+        saveTokenToCookies(response.data.refreshToken, "refreshToken");
+        if(await loadUserData(dispatch)) {
+            const newAvatar = generateAvatar(username);
+            await sendAvatarToServer(newAvatar, "svg+xml");
+            await loadUserData(dispatch);
+        }
     }
 
     useEffect(() => {
