@@ -6,6 +6,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {setRadius} from "../../../redux/RadiusSlice.js";
 import ErrorMessage from "../../ErrorMessage/ErrorMessage.jsx";
 import Select from "../../UserInput/Select/Select.jsx";
+import "../From.css"
 
 function PointForm({pointChecker}) {
     const radius = useSelector((state) => state.radiusReducer.radius);
@@ -55,7 +56,7 @@ function PointForm({pointChecker}) {
     return (
         <form onSubmit={submitForm} className={styles["form"]}>
             <ErrorMessage error={errorMsg}/>
-            <div className={styles["input-container"]}>
+            <div className="input-container">
                 <label htmlFor="x">
                     X:
                 </label>
@@ -68,7 +69,7 @@ function PointForm({pointChecker}) {
                     id="x"
                 />
             </div>
-            <div className={styles["input-container"]}>
+            <div className="input-container">
                 <label htmlFor="y">
                     Y:
                 </label>
@@ -82,7 +83,7 @@ function PointForm({pointChecker}) {
                     step="1"
                 />
             </div>
-            <div className={styles["input-container"]}>
+            <div className="input-container">
                 <label htmlFor="r">
                     R:
                 </label>

@@ -8,6 +8,7 @@ import PasswordInput from "../../UserInput/Input/PasswordInput.jsx";
 import styles from "./AuthForm.module.css"
 import saveTokenToCookies from "../../../util/TokenUtil.js";
 import {generateAvatar, sendAvatarToServer} from "../../../util/AvatarUtil.js";
+import "../From.css"
 
 const LOGIN_REGEX = /^[a-zA-Z][a-zA-Z0-9]{3,23}$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
@@ -57,7 +58,7 @@ function SignUpForm() {
     return (
         <form onSubmit={handleSignUp} className={styles["form"]}>
             <ErrorMessage error={errorMsg}/>
-            <div className={styles["input-container"]}>
+            <div className="input-container">
                 <label htmlFor="login">
                     Логин:
                 </label>
@@ -71,7 +72,7 @@ function SignUpForm() {
                     isRequired
                 />
             </div>
-            <div className={styles["input-container"]}>
+            <div className="input-container">
                 <label htmlFor="pwd">
                     Пароль:
                 </label>
@@ -85,7 +86,7 @@ function SignUpForm() {
                     isRequired
                 />
             </div>
-            <div className={styles["input-container"]}>
+            <div className="input-container">
                 <label htmlFor="pwdConfirm">
                     Повторите пароль:
                 </label>

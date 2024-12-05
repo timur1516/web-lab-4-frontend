@@ -1,12 +1,12 @@
 import {useState, useEffect} from "react";
 import {StatusCodes} from "http-status-codes";
-import axios from "axios";
 import ErrorMessage from "../../ErrorMessage/ErrorMessage.jsx";
 import Input from "../../UserInput/Input/Input.jsx";
 import PasswordInput from "../../UserInput/Input/PasswordInput.jsx";
 import styles from "./EditProfileForm.module.css"
 import {useSelector} from "react-redux";
 import axiosUtil from "../../../util/AxiosUtil.js";
+import "../From.css"
 
 const LOGIN_REGEX = /^[a-zA-Z][a-zA-Z0-9]{3,23}$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
@@ -78,7 +78,7 @@ function EditProfileForm() {
     return (
         <form onSubmit={handleProfileEdit} className={styles["form"]}>
             <ErrorMessage error={errorMsg}/>
-            <div className={styles["input-container"]}>
+            <div className="input-container">
                 <label htmlFor="login">
                     Имя пользователя:
                 </label>
@@ -92,7 +92,7 @@ function EditProfileForm() {
                     isRequired
                 />
             </div>
-            <div className={styles["input-container"]}>
+            <div className="input-container">
                 <label htmlFor="oldPwd">
                     Старый пароль:
                 </label>
@@ -106,7 +106,7 @@ function EditProfileForm() {
                     isRequired
                 />
             </div>
-            <div className={styles["input-container"]}>
+            <div className="input-container">
                 <label htmlFor="pwd">
                     Новый пароль:
                 </label>
@@ -120,7 +120,7 @@ function EditProfileForm() {
                     isRequired
                 />
             </div>
-            <div className={styles["input-container"]}>
+            <div className="input-container">
                 <label htmlFor="pwdConfirm">
                     Повторите новый пароль:
                 </label>

@@ -38,7 +38,7 @@ function Graph({pointChecker}) {
             circle.setAttribute("cx", graphX);
             circle.setAttribute("cy", graphY);
             circle.setAttribute("class", styles["point"]);
-            circle.setAttribute("fill", hit ? "green" : "red");
+            circle.setAttribute("fill", hit ? "var(--valid-color)" : "var(--invalid-color)");
             svg.querySelector("#points").appendChild(circle);
         }
     }

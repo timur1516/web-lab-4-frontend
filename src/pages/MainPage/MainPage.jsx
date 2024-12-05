@@ -68,21 +68,37 @@ function MainPage() {
         });
     }
 
+    function reverseDashboard() {
+        dashboardApi.start({
+            from: {transform: "scale(0) rotate(180deg)"},
+            to: {transform: "scale(1) rotate(0deg)"},
+            onRest: reversePortal
+        });
+    }
+
+    function reversePortal(){
+        portalApi.start({
+            from: {transform: "translate(-50%, -50%) scale(1)"},
+            to: {transform: "translate(-50%, -50%) scale(0)"},
+            onRest: () => {
+                dispatch(setShowGif(false));
+                dispatch(setIsAnimation(false));
+            }
+        });
+    }
+
     async function finishUserChange() {
         await changeUser();
-        await switchTheme();
+        switchTheme();
         resetAnimation();
     }
 
     function resetAnimation() {
-        dispatch(setShowGif(false));
-        portalApi.set({transform: "translate(-50%, -50%) scale(0)"});
-        dashboardApi.set({transform: "scale(1)"});
         overlayApi.start({
             from: {backgroundColor: "black"},
             to: {backgroundColor: "transparent"},
-            onRest: () => {
-                dispatch(setIsAnimation(false));
+            onRest: async () => {
+                reverseDashboard();
             }
         });
     }
@@ -118,7 +134,7 @@ function MainPage() {
         loadPoints(dispatch);
     }, []);
 
-    if (!isDataLoaded) return (<></>);
+    if (!isDataLoaded) return (<>{isAnimation && <Overlay style={overlayStyle}/>}</>);
 
     return (
         <>
@@ -133,8 +149,10 @@ function MainPage() {
                         <ChangeDimensionButton/>
                     </div>
                     <div className={styles["menu-user-container"]}>
-                        <p className={styles["username"]}>{username}</p>
-                        <EditProfileButton/>
+                        <div className={styles["menu-user-info-container"]}>
+                            <p className={styles["username"]}>{username}</p>
+                            <EditProfileButton/>
+                        </div>
                     </div>
                 </div>
                 <div className={styles["dashboard-container"]}>

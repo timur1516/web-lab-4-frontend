@@ -5,9 +5,3 @@
     width: 200px;
     gap: 10px;
 }
-
-.input-container {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-}

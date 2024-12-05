@@ -5,14 +5,20 @@
 
 html, body {
     height: 100%;
-    background-color: var(--background-color);
+}
+
+body{
+    background-image: var(--background-image);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
 }
 
 #root {
     display: flex;
     flex-direction: column;
     height: 100%;
-    background-color: var(--background-color);
     color: var(--text-color);
 }
 
@@ -21,17 +27,17 @@ html, body {
     border-radius: 5px;
     border: none;
     padding: 10px;
-    background-color: var(--button-background-color);
-    color: var(--button-text-color);
+    background-color: var(--main-color);
+    color: var(--text-color);
     transition: 0.5s ease;
 }
 
 .button:hover {
-    background-color: var(--button-hover-background-color);
+    transform: scale(1.03);
 }
 
-.button:focus {
-    border: 1px solid  var(--button-border-color);
+.button:active {
+    transform: scale(0.9);
 }
 
 .button:disabled {
@@ -40,7 +46,7 @@ html, body {
 
 a,
 a:visited {
-    color: inherit;
+    color: var(--text-color);
 }
 
 .lg-view{
@@ -59,4 +65,19 @@ a:visited {
     .sm-view{
         display: block;
     }
+}
+
+::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+    background-color: var(--background-color);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--main-color);
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--background-color);
 }

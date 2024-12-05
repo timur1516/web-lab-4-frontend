@@ -7,6 +7,7 @@ import Input from "../../UserInput/Input/Input.jsx";
 import PasswordInput from "../../UserInput/Input/PasswordInput.jsx";
 import styles from "./AuthForm.module.css";
 import saveTokenToCookies from "../../../util/TokenUtil.js";
+import "../From.css"
 
 function SignInForm() {
     const [login, setLogin] = useState("");
@@ -54,7 +55,7 @@ function SignInForm() {
     return (
         <form onSubmit={handleSignIn} className={styles["form"]}>
             <ErrorMessage error={errorMsg}/>
-            <div className={styles["input-container"]}>
+            <div className="input-container">
                 <label htmlFor="login">
                     Логин:
                 </label>
@@ -67,7 +68,7 @@ function SignInForm() {
                     isRequired
                 />
             </div>
-            <div className={styles["input-container"]}>
+            <div className="input-container">
                 <label htmlFor="pwd">
                     Пароль:
                 </label>

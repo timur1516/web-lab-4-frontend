@@ -15,7 +15,17 @@
     display: flex;
     justify-content: flex-end;
     align-items: center;
+}
+
+.menu-user-info-container{
+    display: flex;
+    align-items: center;
     gap: 10px;
+    padding: 3px;
+    border: 1px solid var(--main-color);
+    box-shadow: 0 0 5px 5px var(--main-color);
+    border-radius: 5px;
+    background-color: var(--background-color);
 }
 
 .menu-logout-container{
@@ -28,8 +38,6 @@
     grid-template-columns: repeat(2, 1fr);
     justify-content: center;
     gap: 10px;
-    /*margin-left: 10px;*/
-    /*margin-right: 10px;*/
 }
 
 .dashboard-container {
@@ -46,8 +54,9 @@
     margin: 10px auto;
     padding: 10px;
     border-radius: 20px;
-    border: 1px solid var(--border-color);
-    box-shadow: 0 0 10px 10px var(--box-shadow-color);
+    border: 1px solid var(--main-color);
+    box-shadow: 0 0 10px 10px var(--main-color);
+    background-color: var(--background-color);
     z-index: 10;
 }
 
