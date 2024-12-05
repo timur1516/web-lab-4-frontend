@@ -14,19 +14,19 @@
     width: 100%;
     height: 100%;
     border-radius: 20px;
-    background-color: #9bcfea;
+    background-color: var(--graph-background-color);
 }
 
 .axis, .arrow{
-    stroke: black;
+    stroke: var(--graph-axis-color);
 }
 
 .label, .arrow {
-    fill: black;
+    fill: var(--graph-axis-color);
 }
 
 .figure{
-    fill: #2427ec;
+    fill: var(--graph-figure-color);
     opacity: 0.5;
 }
 

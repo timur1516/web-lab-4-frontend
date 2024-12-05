@@ -20,6 +20,7 @@ import EditProfileButton from "../../components/EditProfileButton/EditProfileBut
 import {loadPoints, loadUserData} from "../../util/ServerDataLoadUtil.js";
 import saveTokenToCookies from "../../util/TokenUtil.js";
 import {generateAvatar, sendAvatarToServer} from "../../util/AvatarUtil.js";
+import {switchTheme} from "../../util/ThemeUtil.js";
 
 function MainPage() {
     const dispatch = useDispatch();
@@ -63,12 +64,17 @@ function MainPage() {
         overlayApi.start({
             from: {backgroundColor: "transparent"},
             to: {backgroundColor: "black"},
-            onRest: resetAnimation
+            onRest: finishUserChange
         });
     }
 
-    async function resetAnimation() {
+    async function finishUserChange(){
         await changeUser();
+        await switchTheme();
+        resetAnimation();
+    }
+
+    function resetAnimation() {
         dispatch(setShowGif(false));
         portalApi.set({transform: "translate(-50%, -50%) scale(0)"});
         dashboardApi.set({transform: "scale(1)"});

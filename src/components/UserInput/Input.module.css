@@ -16,17 +16,17 @@
 }
 
 .input-tip {
-    background-color: rgb(40, 37, 37);
-    color: white;
+    background-color: var(--input-tip-background-color);
+    color: var(--input-tip-color);
     padding: 5px;
     font-size: 0.8rem;
     border-radius: 5px;
 }
 
 .valid-input-field {
-    border: 3px solid green;
+    border: 3px solid var(--input-valid-color);
 }
 
 .invalid-input-field {
-    border: 3px solid red;
+    border: 3px solid var(--input-invalid-color);
 }

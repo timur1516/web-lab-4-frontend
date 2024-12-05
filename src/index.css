@@ -5,15 +5,15 @@
 
 html, body {
     height: 100%;
-    background-color: #020920;
+    background-color: var(--background-color);
 }
 
 #root {
     display: flex;
     flex-direction: column;
     height: 100%;
-    background-color: #020920;
-    color: white;
+    background-color: var(--background-color);
+    color: var(--text-color);
 }
 
 .button {
@@ -21,17 +21,17 @@ html, body {
     border-radius: 5px;
     border: none;
     padding: 10px;
-    background-color: hsl(240, 100%, 50%);
-    color: hsl(208, 100%, 100%);
+    background-color: var(--button-background-color);
+    color: var(--button-text-color);
     transition: 0.5s ease;
 }
 
 .button:hover {
-    background-color: hsl(240, 100%, 70%);
+    background-color: var(--button-hover-background-color);
 }
 
 .button:focus {
-    border: 1px solid hsl(237, 90%, 90%);
+    border: 1px solid  var(--button-border-color);
 }
 
 .button:disabled {

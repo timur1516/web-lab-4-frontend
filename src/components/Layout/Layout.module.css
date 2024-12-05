@@ -7,7 +7,7 @@
     margin-bottom: 10px;
     font-family: fantasy;
     font-size: 20px;
-    box-shadow: 0 0 10px 10px blue;
+    box-shadow: 0 0 10px 10px var(--box-shadow-color);
 }
 
 .footer {

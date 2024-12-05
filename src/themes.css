@@ -1,0 +1,68 @@
+:root {
+    --background-color: #020920;
+    --text-color: #ffffff;
+    --error-text-color: #ff0000ff;
+    --box-shadow-color: #0000FFFF;
+    --border-color: #0000FFFF;
+
+    --button-text-color: #ffffff;
+    --button-background-color: #0000ffff;
+    --button-hover-background-color: #6666ffff;
+    --button-border-color: #CFD1FCFF;
+
+    --graph-background-color: #9bcfea;
+    --graph-axis-color: #000000FF;
+    --graph-figure-color: #2427ec;
+
+    --input-tip-background-color: #282525FF;
+    --input-tip-color: #ffffff;
+
+    --input-valid-color: #008000FF;
+    --input-invalid-color: #FF0000FF;
+}
+
+[data-theme="theme1"] {
+    --background-color: #cf0b0b;
+    --text-color: #ffffff;
+    --error-text-color: #ff0000ff;
+    --box-shadow-color: #0000FFFF;
+    --border-color: #0000FFFF;
+
+    --button-text-color: #ffffff;
+    --button-background-color: #0000ffff;
+    --button-hover-background-color: #6666ffff;
+    --button-border-color: #CFD1FCFF;
+
+    --graph-background-color: #9bcfea;
+    --graph-axis-color: #000000FF;
+    --graph-figure-color: #2427ec;
+
+    --input-tip-background-color: #282525FF;
+    --input-tip-color: #ffffff;
+
+    --input-valid-color: #008000FF;
+    --input-invalid-color: #FF0000FF;
+}
+
+[data-theme="theme2"] {
+    --background-color: #7cd812;
+    --text-color: #ffffff;
+    --error-text-color: #ff0000ff;
+    --box-shadow-color: #0000FFFF;
+    --border-color: #0000FFFF;
+
+    --button-text-color: #ffffff;
+    --button-background-color: #0000ffff;
+    --button-hover-background-color: #6666ffff;
+    --button-border-color: #CFD1FCFF;
+
+    --graph-background-color: #9bcfea;
+    --graph-axis-color: #000000FF;
+    --graph-figure-color: #2427ec;
+
+    --input-tip-background-color: #282525FF;
+    --input-tip-color: #ffffff;
+
+    --input-valid-color: #008000FF;
+    --input-invalid-color: #FF0000FF;
+}

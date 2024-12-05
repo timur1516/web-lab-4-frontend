@@ -6,8 +6,8 @@
     border-radius: 10px;
     gap: 20px;
     width: 300px;
-    border: 1px solid blue;
-    box-shadow: 0 0 10px 10px blue;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 0 10px 10px var(--box-shadow-color);
 }
 
 @media(max-width: 400px){

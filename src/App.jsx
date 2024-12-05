@@ -5,9 +5,17 @@ import MainPage from "./pages/MainPage/MainPage.jsx";
 import ErrorPage from "./pages/ErrorPage/ErrorPage.jsx";
 import NotFoundPage from "./pages/NotFoundPage/NotFoundPage.jsx";
 import "./index.css"
+import "./themes.css"
 import ProfilePage from "./pages/ProfilePage/ProfilePage.jsx";
+import {useEffect} from "react";
+import {setTheme} from "./util/ThemeUtil.js";
 
 function App() {
+
+    useEffect(() => {
+        setTheme();
+    }, [])
+
     return (
         <>
             <Router>

@@ -4,6 +4,8 @@ import axiosUtil from "../../util/AxiosUtil.js";
 import Cookies from "js-cookie";
 import {useDispatch} from "react-redux";
 import {setIsDataLoaded} from "../../redux/HistorySlice.js";
+import {setRadius} from "../../redux/RadiusSlice.js";
+import {dropTheme} from "../../util/ThemeUtil.js";
 
 function LogOutButton() {
 
@@ -14,6 +16,8 @@ function LogOutButton() {
         Cookies.remove("accessToken");
         Cookies.remove("refreshToken");
         dispatch(setIsDataLoaded(false));
+        dispatch(setRadius(1));
+        dropTheme();
         navigate("/sign-in");
     }
 

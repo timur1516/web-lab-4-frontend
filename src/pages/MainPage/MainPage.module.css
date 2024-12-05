@@ -43,8 +43,8 @@
     margin: 10px auto;
     padding: 10px;
     border-radius: 20px;
-    border: 1px solid blue;
-    box-shadow: 0 0 10px 10px blue;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 0 10px 10px var(--box-shadow-color);
     z-index: 10;
 }
 
