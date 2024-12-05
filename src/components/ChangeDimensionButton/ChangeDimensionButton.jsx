@@ -1,4 +1,3 @@
-import styles from "./ChangeDimensionButton.module.css"
 import {useDispatch} from "react-redux";
 import {setIsAnimation} from "../../redux/AnimationSlice.js";
 
@@ -11,8 +10,9 @@ function ChangeDimensionButton() {
     }
 
     return (
-        <button className={`${styles.button} button`} onClick={handleDimensionChange}>
-            Сменить измерение
+        <button className={"button"} onClick={handleDimensionChange}>
+            <span className="lg-view">Сменить измерение</span>
+            <span className="sm-view">꩜</span>
         </button>
     );
 }

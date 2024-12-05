@@ -1,4 +1,3 @@
-import styles from "./CleanTableButton.module.css"
 import axiosUtil from "../../util/AxiosUtil.js";
 import {loadPoints} from "../../util/ServerDataLoadUtil.js";
 import {useDispatch} from "react-redux";
@@ -11,8 +10,9 @@ function CleanTableButton() {
     }
 
     return (
-        <button className={`${styles.button} button`} onClick={handleTableClean}>
-            Очистить таблицу
+        <button className={"button"} onClick={handleTableClean}>
+            <span className="lg-view">Очистить таблицу</span>
+            <span className="sm-view">🗑️</span>
         </button>
     );
 }

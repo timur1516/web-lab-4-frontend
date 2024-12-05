@@ -1,4 +1,3 @@
-import styles from "./LogOutButton.module.css"
 import {useNavigate} from "react-router-dom";
 import axiosUtil from "../../util/AxiosUtil.js";
 import Cookies from "js-cookie";
@@ -6,6 +5,7 @@ import {useDispatch} from "react-redux";
 import {setIsDataLoaded} from "../../redux/HistorySlice.js";
 import {setRadius} from "../../redux/RadiusSlice.js";
 import {dropTheme} from "../../util/ThemeUtil.js";
+import styles from "../HistoryTable/HistoryTable.module.css";
 
 function LogOutButton() {
 
@@ -22,8 +22,9 @@ function LogOutButton() {
     }
 
     return (
-        <button className={`${styles.button} button`} onClick={handleLogOut}>
-            Выйти из аккаунта
+        <button className={"button"} onClick={handleLogOut}>
+            <span className="lg-view">Выйти из аккаунта</span>
+            <span className="sm-view">↩</span>
         </button>
     );
 }

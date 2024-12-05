@@ -42,3 +42,21 @@ a,
 a:visited {
     color: inherit;
 }
+
+.lg-view{
+    display: block;
+}
+
+.sm-view{
+    display: none;
+}
+
+@media (max-width: 742px) {
+    .lg-view{
+        display: none;
+    }
+
+    .sm-view{
+        display: block;
+    }
+}

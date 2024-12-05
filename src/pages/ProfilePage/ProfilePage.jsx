@@ -26,17 +26,19 @@ function ProfilePage() {
         <>
             <Header/>
             <ContentContainer>
-                <div className={styles["edit-profile-container"]}>
-                    <div className={styles["form-container"]}>
-                        <div className={styles["form-header-container"]}>
-                            <span>Изменение профиля</span>
+                <div className={styles["wrapper"]}>
+                    <div className={styles["edit-profile-container"]}>
+                        <div className={styles["form-container"]}>
+                            <div className={styles["form-header-container"]}>
+                                <span>Изменение профиля</span>
+                            </div>
+                            <EditProfileForm/>
+                            <button onClick={handleClose} className="button">
+                                На главную
+                            </button>
                         </div>
-                        <EditProfileForm/>
-                        <button onClick={handleClose} className="button">
-                            На главную
-                        </button>
+                        <AvatarForm/>
                     </div>
-                    <AvatarForm/>
                 </div>
             </ContentContainer>
             <Footer/>

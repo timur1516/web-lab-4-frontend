@@ -13,16 +13,16 @@ function HistoryTable() {
                 <th>Y</th>
                 <th>R</th>
                 <th>
-                    <span className={styles["lg-view"]}>Попадание</span>
-                    <span className={styles["sm-view"]}>🎯</span>
+                    <span className="lg-view">Попадание</span>
+                    <span className="sm-view">🎯</span>
                 </th>
                 <th>
-                    <span className={styles["lg-view"]}>Время запроса</span>
-                    <span className={styles["sm-view"]}>🕓</span>
+                    <span className="lg-view">Время запроса</span>
+                    <span className="sm-view">🕓</span>
                 </th>
                 <th>
-                    <span className={styles["lg-view"]}>Время выполнения</span>
-                    <span className={styles["sm-view"]}>🚀</span>
+                    <span className="lg-view">Время выполнения</span>
+                    <span className="sm-view">🚀</span>
                 </th>
             </tr>
             </thead>
@@ -33,18 +33,18 @@ function HistoryTable() {
                     <td>{entry.y.toFixed(2)}</td>
                     <td>{entry.r.toFixed(2)}</td>
                     <td>
-                        <span className={styles["lg-view"]}>
+                        <span className="lg-view">
                             {entry.hit ? "Попал" : "Промазал"}
                         </span>
-                        <span className={styles["sm-view"]}>
+                        <span className="sm-view">
                             {entry.hit ? "✅" : "❌"}
                         </span>
                     </td>
                     <td>
-                        <span className={styles["lg-view"]}>
+                        <span className="lg-view">
                             {new Date(entry.reqTime).toLocaleTimeString()}
                         </span>
-                        <span className={styles["sm-view"]}>
+                        <span className="sm-view">
                             {new Date(entry.reqTime).toLocaleTimeString([], {hour: "2-digit", minute: "2-digit"})}
                         </span>
                     </td>

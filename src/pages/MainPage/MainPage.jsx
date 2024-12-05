@@ -68,7 +68,7 @@ function MainPage() {
         });
     }
 
-    async function finishUserChange(){
+    async function finishUserChange() {
         await changeUser();
         await switchTheme();
         resetAnimation();
@@ -92,7 +92,7 @@ function MainPage() {
         const response = await axiosUtil.post("auth/change-user");
         saveTokenToCookies(response.data.accessToken, "accessToken");
         saveTokenToCookies(response.data.refreshToken, "refreshToken");
-        if(await loadUserData(dispatch)) {
+        if (await loadUserData(dispatch)) {
             const newAvatar = generateAvatar(username);
             await sendAvatarToServer(newAvatar, "svg+xml");
             await loadUserData(dispatch);
@@ -125,13 +125,15 @@ function MainPage() {
             <Header/>
             <ContentContainer>
                 <div className={styles["menu-container"]}>
-                    <LogOutButton/>
+                    <div className={styles["menu-logout-container"]}>
+                        <LogOutButton/>
+                    </div>
                     <div className={styles["menu-control-container"]}>
                         <CleanTableButton/>
                         <ChangeDimensionButton/>
                     </div>
                     <div className={styles["menu-user-container"]}>
-                        <p>{username}</p>
+                        <p className={styles["username"]}>{username}</p>
                         <EditProfileButton/>
                     </div>
                 </div>
