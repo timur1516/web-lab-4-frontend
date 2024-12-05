@@ -13,7 +13,7 @@ function EditProfileButton() {
     const avatar = useSelector(state => state.userReducer.avatar);
 
     return (
-        <img src={avatar} alt="аватарка" className={`${styles.button}`} onClick={handleEditProfileClick}/>
+        <img src={avatar} alt="аватарка" className={`${styles.button} button`} onClick={handleEditProfileClick}/>
     );
 }
 

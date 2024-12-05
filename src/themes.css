@@ -1,6 +1,6 @@
 :root {
     --background-color: rgba(2, 9, 32, 0.7);
-    --background-image: url('/public/theme1.jpg');
+    --background-image: url('/defaultTheme.jpg');
     --text-color: #ffffff;
     --main-color: #0000FFFF;
     --opacity-color: rgba(255, 255, 255, 0.2);
@@ -10,31 +10,31 @@
 }
 
 [data-theme="theme1"] {
-    --background-image: url('/public/theme1.jpg');
+    --background-image: url('/theme1.jpg');
     --main-color: #ff00ec;
 }
 
 [data-theme="theme2"] {
-    --background-image: url('/public/theme2.jpg');
+    --background-image: url('/theme2.jpg');
     --main-color: #0000FFFF;
 }
 
 [data-theme="theme3"] {
-    --background-image: url('/public/theme3.jpg');
+    --background-image: url('/theme3.jpg');
     --main-color: #ff5900;
 }
 
 [data-theme="theme4"] {
-    --background-image: url('/public/theme4.jpg');
+    --background-image: url('/theme4.jpg');
     --main-color: #ff0000;
 }
 
 [data-theme="theme5"] {
-    --background-image: url('/public/theme5.jpg');
+    --background-image: url('/theme5.jpg');
     --main-color: #a100ff;
 }
 
 [data-theme="theme6"] {
-    --background-image: url('/public/theme6.jpg');
+    --background-image: url('/theme6.jpg');
     --main-color: #1f610a;
 }

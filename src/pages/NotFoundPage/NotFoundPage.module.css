@@ -1,4 +1,9 @@
 .not-found-message-container{
     margin: auto;
     font-size: 32px;
+    background-color: var(--background-color);
+    padding: 10px;
+    border: 1px solid var(--main-color);
+    border-radius: 20px;
+    box-shadow: 0 0 5px 5px var(--main-color);
 }
