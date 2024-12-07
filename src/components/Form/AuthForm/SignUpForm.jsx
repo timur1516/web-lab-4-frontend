@@ -39,13 +39,15 @@ function SignUpForm() {
         }
 
         try {
-            const response = await axios.post("auth/signup", {username: login, password: pwd});
+            const response = await axios.post("auth/register", {username: login, password: pwd});
+            console.log(response);
             saveTokenToCookies(response.data.accessToken, "accessToken");
             saveTokenToCookies(response.data.refreshToken, "refreshToken");
             const avatar = generateAvatar(login);
             await sendAvatarToServer(avatar, "svg+xml");
             navigate("/main");
         } catch (error) {
+            console.log(error);
             if (!error.response)
                 setErrorMsg("Сервер временно не доступен, попробуйте позже");
             else if (error.response.status === StatusCodes.INTERNAL_SERVER_ERROR)

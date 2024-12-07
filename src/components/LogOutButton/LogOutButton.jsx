@@ -1,18 +1,16 @@
 import {useNavigate} from "react-router-dom";
-import axiosUtil from "../../util/AxiosUtil.js";
 import Cookies from "js-cookie";
 import {useDispatch} from "react-redux";
 import {setIsDataLoaded} from "../../redux/HistorySlice.js";
 import {setRadius} from "../../redux/RadiusSlice.js";
 import {dropTheme} from "../../util/ThemeUtil.js";
-import styles from "../HistoryTable/HistoryTable.module.css";
+import axios from "axios";
 
 function LogOutButton() {
-
     const navigate = useNavigate();
     const dispatch = useDispatch();
     async function handleLogOut() {
-        await axiosUtil.post("auth/logout");
+        await axios.post("auth/logout", {"token": Cookies.get("refreshToken")});
         Cookies.remove("accessToken");
         Cookies.remove("refreshToken");
         dispatch(setIsDataLoaded(false));

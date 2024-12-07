@@ -34,7 +34,7 @@ function SignInForm() {
         }
 
         axios
-            .post("auth/login", {username: login, password: pwd})
+            .post("auth/authenticate", {username: login, password: pwd})
             .then((response) => {
                 saveTokenToCookies(response.data.accessToken, "accessToken");
                 saveTokenToCookies(response.data.refreshToken, "refreshToken");
@@ -47,7 +47,7 @@ function SignInForm() {
                     setErrorMsg("Возникла непредвиденная ошибка на сервере");
                 else if (error.response.status === StatusCodes.NOT_FOUND)
                     setErrorMsg("Пользователь с таким именем не найден");
-                else if (error.response.status === StatusCodes.UNAUTHORIZED)
+                else if (error.response.status === StatusCodes.FORBIDDEN)
                     setErrorMsg("Неверный пароль");
             });
     }

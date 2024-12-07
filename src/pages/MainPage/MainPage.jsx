@@ -105,7 +105,7 @@ function MainPage() {
 
     async function changeUser() {
         dispatch(setIsDataLoaded(false));
-        const response = await axiosUtil.post("auth/change-user");
+        const response = await axiosUtil.post("main/change-user");
         saveTokenToCookies(response.data.accessToken, "accessToken");
         saveTokenToCookies(response.data.refreshToken, "refreshToken");
         if (await loadUserData(dispatch)) {
