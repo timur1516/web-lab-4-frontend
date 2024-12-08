@@ -14,7 +14,9 @@ const LOGIN_REGEX = /^[a-zA-Z][a-zA-Z0-9]{3,23}$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
 
 function SignUpForm() {
-    const [login, setLogin] = useState("");
+    const [username, setUsername] = useState("");
+    const [firstName, setFirstName] = useState("");
+    const [lastName, setLastName] = useState("");
     const [pwd, setPwd] = useState("");
     const [pwdConfirm, setPwdConfirm] = useState("");
 
@@ -22,38 +24,46 @@ function SignUpForm() {
 
     const navigate = useNavigate()
 
-    const validateLogin = (value) => LOGIN_REGEX.test(value);
+    const validateUsername = (value) => LOGIN_REGEX.test(value);
     const validatePwd = (value) => PWD_REGEX.test(value);
     const validatePwdConfirm = (value) => pwd === value && validatePwd(pwd);
+    const validateFirstName = (value) => value !== "";
+    const validateLastName = (value) => value !== "";
 
     useEffect(() => {
         setErrorMsg("");
-    }, [login, pwd, pwdConfirm]);
+    }, [username, pwd, pwdConfirm, firstName, lastName]);
 
     async function handleSignUp(event) {
         event.preventDefault();
 
-        if (!validateLogin(login) || !validatePwd(pwd) || !validatePwdConfirm(pwdConfirm)) {
+        if (!validateUsername(username) ||
+            !validatePwd(pwd) ||
+            !validatePwdConfirm(pwdConfirm) ||
+            !validateFirstName(pwdConfirm) ||
+            !validateLastName(pwdConfirm)) {
             setErrorMsg("Данные не валидны");
             return;
         }
 
         try {
-            const response = await axios.post("auth/register", {username: login, password: pwd});
-            console.log(response);
+            const response = await axios
+                .post("auth/register", {
+                    username: username,
+                    password: pwd,
+                    firstName: firstName,
+                    lastName: lastName
+                });
             saveTokenToCookies(response.data.accessToken, "accessToken");
             saveTokenToCookies(response.data.refreshToken, "refreshToken");
-            const avatar = generateAvatar(login);
+            const avatar = generateAvatar(username);
             await sendAvatarToServer(avatar, "svg+xml");
             navigate("/main");
         } catch (error) {
-            console.log(error);
-            if (!error.response)
-                setErrorMsg("Сервер временно не доступен, попробуйте позже");
-            else if (error.response.status === StatusCodes.INTERNAL_SERVER_ERROR)
-                setErrorMsg("Возникла непредвиденная ошибка на сервере");
-            else if (error.response.status === StatusCodes.CONFLICT)
+            if (error.response?.status === StatusCodes.CONFLICT)
                 setErrorMsg("Имя пользователя занято");
+            else
+                setErrorMsg("Возникла непредвиденная ошибка на сервере");
         }
     }
 
@@ -61,16 +71,42 @@ function SignUpForm() {
         <form onSubmit={handleSignUp} className={styles["form"]}>
             <ErrorMessage error={errorMsg}/>
             <div className="input-container">
-                <label htmlFor="login">
+                <label htmlFor="username">
                     Логин:
                 </label>
                 <Input
-                    id="login"
-                    value={login}
-                    onChange={setLogin}
+                    id="username"
+                    value={username}
+                    onChange={setUsername}
                     placeholder={"Введите логин"}
-                    validator={validateLogin}
+                    validator={validateUsername}
                     tip="4-24 символа. Первый символ - буква. Разрешены латинские буквы и цифры."
+                    isRequired
+                />
+            </div>
+            <div className="input-container">
+                <label htmlFor="firstName">
+                    Имя:
+                </label>
+                <Input
+                    id="firstName"
+                    value={firstName}
+                    onChange={setFirstName}
+                    placeholder={"Введите имя"}
+                    validator={validateFirstName}
+                    isRequired
+                />
+            </div>
+            <div className="input-container">
+                <label htmlFor="lastName">
+                    Фамилия:
+                </label>
+                <Input
+                    id="lastName"
+                    value={lastName}
+                    onChange={setLastName}
+                    placeholder={"Введите фамилию"}
+                    validator={validateLastName}
                     isRequired
                 />
             </div>
@@ -105,7 +141,7 @@ function SignUpForm() {
             <button
                 className="button"
                 type="submit"
-                disabled={!(validateLogin(login) && validatePwd(pwd) && validatePwdConfirm(pwdConfirm))}
+                disabled={!(validateUsername(username) && validatePwd(pwd) && validatePwdConfirm(pwdConfirm))}
             >
                 Зарегистрироваться
             </button>

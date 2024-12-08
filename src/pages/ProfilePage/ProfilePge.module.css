@@ -24,6 +24,7 @@
     box-shadow: 0 0 10px 10px var(--main-color);
     background-color: var(--background-color);
     margin-bottom: 10px;
+    margin-top: 10px;
 }
 
 @media (max-width: 742px) {

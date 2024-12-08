@@ -33,14 +33,14 @@ axiosUtil.interceptors.response.use(
     (response) => response,
     async (error) => {
         const originalRequest = error.config;
-        if (error.response?.status === StatusCodes.UNAUTHORIZED && !originalRequest._retry) {
+        if (error.response?.status === StatusCodes.FORBIDDEN && !originalRequest._retry) {
             originalRequest._retry = true;
             try {
                 const newToken = await refreshAccessToken();
                 originalRequest.headers.Authorization = `Bearer ${newToken}`;
                 return axiosUtil(originalRequest);
             } catch (refreshError) {
-                if (refreshError?.status === StatusCodes.UNAUTHORIZED)
+                if (refreshError?.status === StatusCodes.FORBIDDEN)
                     window.location.href = "/sign-in";
                 else
                     window.location.href = "/error";

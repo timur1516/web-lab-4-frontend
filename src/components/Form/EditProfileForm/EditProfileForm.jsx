@@ -7,69 +7,81 @@ import styles from "./EditProfileForm.module.css"
 import {useSelector} from "react-redux";
 import axiosUtil from "../../../util/AxiosUtil.js";
 import "../From.css"
+import axios from "axios";
 
-const LOGIN_REGEX = /^[a-zA-Z][a-zA-Z0-9]{3,23}$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
 
 function EditProfileForm() {
+    const curFirstName = useSelector(state => state.userReducer.firstName);
+    const curLastName = useSelector(state => state.userReducer.lastName);
     const username = useSelector(state => state.userReducer.username);
-    const [login, setLogin] = useState(username);
+    const [firstName, setFirstName] = useState(curFirstName);
+    const [lastName, setLastName] = useState(curLastName);
     const [oldPwd, setOldPwd] = useState("");
     const [pwd, setPwd] = useState("");
     const [pwdConfirm, setPwdConfirm] = useState("");
 
     const [errorMsg, setErrorMsg] = useState("");
 
-    const validateLogin = (value) => LOGIN_REGEX.test(value);
     const validateOldPwd = (value) => value !== "" || pwd === "" && pwdConfirm === "";
     const validatePwd = (value) => PWD_REGEX.test(value) || pwd === "" && pwdConfirm === "" && value === "";
     const validatePwdConfirm = (value) => pwd === value && validatePwd(pwd);
+    const validateFirstName = (value) => value !== "";
+    const validateLastName = (value) => value !== "";
 
     useEffect(() => {
         setErrorMsg("");
-    }, [login, pwd, pwdConfirm, oldPwd]);
+    }, [firstName, lastName, pwd, pwdConfirm, oldPwd]);
 
-    useEffect(() => {setLogin(username)}, [username]);
+    useEffect(() => {
+        setFirstName(curFirstName);
+        setLastName(curLastName);
+    }, [curFirstName, curLastName]);
+
+    function cleanForm(){
+        setErrorMsg("");
+        setFirstName(firstName);
+        setLastName(lastName);
+        setOldPwd("");
+        setPwd("");
+        setPwdConfirm("");
+    }
 
     async function handleProfileEdit(event) {
         event.preventDefault();
 
-        if (!validateLogin(login) || !validatePwd(pwd) || !validatePwdConfirm(pwdConfirm) || !validateOldPwd(oldPwd)) {
+        if (!validateFirstName(firstName) ||
+            !validateLastName(lastName) ||
+            !validatePwd(pwd) ||
+            !validatePwdConfirm(pwdConfirm) ||
+            !validateOldPwd(oldPwd)) {
             setErrorMsg("Данные не валидны");
             return;
         }
 
-        if(login !== username) {
+        if (firstName !== curFirstName || lastName !== curLastName) {
             axiosUtil
-                .post("main/update-username", {username: login})
-                .then(() => {
-                    setErrorMsg("");
-                    setOldPwd("");
-                    setErrorMsg("");
-                    setOldPwd("");
+                .post("main/update-user-details", {
+                    firstName: firstName,
+                    lastName: lastName
                 })
-                .catch((error) => {
-                    if (!error.response)
-                        setErrorMsg("Сервер временно не доступен, попробуйте позже");
-                    else if (error.response.status === StatusCodes.INTERNAL_SERVER_ERROR)
-                        setErrorMsg("Возникла непредвиденная ошибка на сервере");
-                    else if (error.response.status === StatusCodes.CONFLICT)
-                        setErrorMsg("Имя пользователя занято");
+                .then(cleanForm)
+                .catch(() => {
+                    setErrorMsg("Возникла непредвиденная ошибка на сервере");
                 });
         }
-        if(pwd !== "") {
-            axiosUtil
-                .post("main/update-password", {password: pwd})
-                .then(() => {
-                    setErrorMsg("");
-                    setOldPwd("");
-                    setErrorMsg("");
-                    setOldPwd("");
+        if (pwd !== "") {
+            axios
+                .post("auth/update-password", {
+                    oldPassword: oldPwd,
+                    newPassword: pwd,
+                    username: username
                 })
+                .then(cleanForm)
                 .catch((error) => {
-                    if (!error.response)
-                        setErrorMsg("Сервер временно не доступен, попробуйте позже");
-                    else if (error.response.status === StatusCodes.INTERNAL_SERVER_ERROR)
+                    if (error.response.status === StatusCodes.FORBIDDEN)
+                        setErrorMsg("Неверный пароль");
+                    else
                         setErrorMsg("Возникла непредвиденная ошибка на сервере");
                 });
         }
@@ -79,16 +91,28 @@ function EditProfileForm() {
         <form onSubmit={handleProfileEdit} className={styles["form"]}>
             <ErrorMessage error={errorMsg}/>
             <div className="input-container">
-                <label htmlFor="login">
-                    Имя пользователя:
+                <label htmlFor="firstName">
+                    Имя:
                 </label>
                 <Input
-                    id="login"
-                    value={login}
-                    onChange={setLogin}
-                    placeholder={"Введите имя пользователя"}
-                    validator={validateLogin}
-                    tip="4-24 символа. Первый символ - буква. Разрешены латинские буквы и цифры."
+                    id="firstName"
+                    value={firstName}
+                    onChange={setFirstName}
+                    placeholder={"Введите имя"}
+                    validator={validateFirstName}
+                    isRequired
+                />
+            </div>
+            <div className="input-container">
+                <label htmlFor="lastName">
+                    Фамилия:
+                </label>
+                <Input
+                    id="lastName"
+                    value={lastName}
+                    onChange={setLastName}
+                    placeholder={"Введите фамилию"}
+                    validator={validateLastName}
                     isRequired
                 />
             </div>
@@ -137,7 +161,7 @@ function EditProfileForm() {
             <button
                 className="button"
                 type="submit"
-                disabled={!validateLogin(login) || !validatePwd(pwd) || !validatePwdConfirm(pwdConfirm) || !validateOldPwd(oldPwd)}
+                disabled={!validateFirstName(firstName) || !validateLastName(lastName) || !validatePwd(pwd) || !validatePwdConfirm(pwdConfirm) || !validateOldPwd(oldPwd)}
             >
                 Сохранить
             </button>

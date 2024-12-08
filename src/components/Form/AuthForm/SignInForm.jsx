@@ -10,8 +10,8 @@ import saveTokenToCookies from "../../../util/TokenUtil.js";
 import "../From.css"
 
 function SignInForm() {
-    const [login, setLogin] = useState("");
-    const [pwd, setPwd] = useState("");
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
 
     const navigate = useNavigate();
 
@@ -19,36 +19,31 @@ function SignInForm() {
 
     useEffect(() => {
         setErrorMsg("");
-    }, [login, pwd]);
+    }, [username, password]);
 
-    const validateLogin = (value) => value !== "";
-    const validatePwd = (value) => value !== "";
-
+    const validateUsername = (value) => value !== "";
+    const validatePassword = (value) => value !== "";
 
     async function handleSignIn(event) {
         event.preventDefault();
 
-        if (!validateLogin(login) || !validatePwd(pwd)) {
+        if (!validateUsername(username) || !validatePassword(password)) {
             setErrorMsg("Данные не валидны");
             return;
         }
 
         axios
-            .post("auth/authenticate", {username: login, password: pwd})
+            .post("auth/login", {username: username, password: password})
             .then((response) => {
                 saveTokenToCookies(response.data.accessToken, "accessToken");
                 saveTokenToCookies(response.data.refreshToken, "refreshToken");
                 navigate("/main");
             })
             .catch((error) => {
-                if (!error.response)
-                    setErrorMsg("Сервер временно не доступен, попробуйте позже");
-                else if (error.response.status === StatusCodes.INTERNAL_SERVER_ERROR)
+                if (error.response.status === StatusCodes.FORBIDDEN)
+                    setErrorMsg("Неверный логин или пароль");
+                else
                     setErrorMsg("Возникла непредвиденная ошибка на сервере");
-                else if (error.response.status === StatusCodes.NOT_FOUND)
-                    setErrorMsg("Пользователь с таким именем не найден");
-                else if (error.response.status === StatusCodes.FORBIDDEN)
-                    setErrorMsg("Неверный пароль");
             });
     }
 
@@ -61,10 +56,10 @@ function SignInForm() {
                 </label>
                 <Input
                     id="login"
-                    value={login}
-                    onChange={setLogin}
+                    value={username}
+                    onChange={setUsername}
                     placeholder={"Введите логин"}
-                    validator={validateLogin}
+                    validator={validateUsername}
                     isRequired
                 />
             </div>
@@ -74,17 +69,17 @@ function SignInForm() {
                 </label>
                 <PasswordInput
                     id="pwd"
-                    value={pwd}
-                    onChange={setPwd}
+                    value={password}
+                    onChange={setPassword}
                     placeholder={"Введите пароль"}
-                    validator={validatePwd}
+                    validator={validatePassword}
                     isRequired
                 />
             </div>
             <button
                 className="button"
                 type="submit"
-                disabled={!(validateLogin(login) && validatePwd(pwd))}
+                disabled={!(validateUsername(username) && validatePassword(password))}
             >
                 Войти
             </button>
