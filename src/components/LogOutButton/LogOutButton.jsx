@@ -10,13 +10,17 @@ function LogOutButton() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     async function handleLogOut() {
-        await axios.post("auth/logout", {"token": Cookies.get("refreshToken")});
-        Cookies.remove("accessToken");
-        Cookies.remove("refreshToken");
-        dispatch(setIsDataLoaded(false));
-        dispatch(setRadius(1));
-        dropTheme();
-        navigate("/sign-in");
+        try {
+            await axios.post("auth/logout", {"token": Cookies.get("refreshToken")});
+            Cookies.remove("accessToken");
+            Cookies.remove("refreshToken");
+            dispatch(setIsDataLoaded(false));
+            dispatch(setRadius(1));
+            dropTheme();
+            navigate("/sign-in");
+        } catch (error) {
+            navigate("/error");
+        }
     }
 
     return (

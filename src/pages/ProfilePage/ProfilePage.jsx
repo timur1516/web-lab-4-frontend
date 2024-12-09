@@ -4,13 +4,15 @@ import Footer from "../../components/Layout/Footer.jsx";
 import styles from "./ProfilePge.module.css"
 import EditProfileForm from "../../components/Form/EditProfileForm/EditProfileForm.jsx";
 import {useNavigate} from "react-router-dom";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import AvatarForm from "../../components/Form/AvatarForm/AvatarForm.jsx";
 import {useEffect} from "react";
 import {loadUserData} from "../../util/ServerDataLoadUtil.js";
+import {switchTheme} from "../../util/ThemeUtil.js";
 
 function ProfilePage() {
     const navigate = useNavigate();
+    const isDataLoaded = useSelector(state => state.historyReducer.isDataLoaded);
 
     function handleClose() {
         navigate("/main");
@@ -21,6 +23,10 @@ function ProfilePage() {
     useEffect(() => {
         loadUserData(dispatch);
     }, []);
+
+    if(!isDataLoaded) {
+        return (<></>);
+    }
 
     return (
         <>

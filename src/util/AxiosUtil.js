@@ -8,6 +8,7 @@ axios.defaults.baseURL = "http://localhost:8080/api";
 const axiosUtil = axios.create();
 
 async function refreshAccessToken() {
+    if (!Cookies.get("refreshToken")) return null;
     const response = await axios.post("/auth/refresh-token", {
         "token": Cookies.get("refreshToken")
     });
@@ -37,12 +38,20 @@ axiosUtil.interceptors.response.use(
             originalRequest._retry = true;
             try {
                 const newToken = await refreshAccessToken();
+                if(!newToken){
+                    Cookies.remove("accessToken");
+                    Cookies.remove("refreshToken");
+                    window.location.href = "/sign-in";
+                    return;
+                }
                 originalRequest.headers.Authorization = `Bearer ${newToken}`;
                 return axiosUtil(originalRequest);
             } catch (refreshError) {
-                if (refreshError?.status === StatusCodes.FORBIDDEN)
+                if (refreshError?.status === StatusCodes.FORBIDDEN) {
+                    Cookies.remove("accessToken");
+                    Cookies.remove("refreshToken");
                     window.location.href = "/sign-in";
-                else
+                } else
                     window.location.href = "/error";
                 return Promise.reject(refreshError);
             }
