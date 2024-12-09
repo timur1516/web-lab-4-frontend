@@ -38,3 +38,13 @@
     --background-image: url('/theme6.jpg');
     --main-color: #1f610a;
 }
+
+[data-theme="notFound"] {
+    --background-image: url('/notFound.jpg');
+    --main-color: #2af0a7;
+}
+
+[data-theme="error"] {
+    --background-image: url('/error.jpg');
+    --main-color: #1f610a;
+}

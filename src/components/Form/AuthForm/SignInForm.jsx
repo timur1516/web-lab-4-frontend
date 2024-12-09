@@ -4,10 +4,10 @@ import {StatusCodes} from "http-status-codes";
 import axios from "axios";
 import ErrorMessage from "../../ErrorMessage/ErrorMessage.jsx";
 import Input from "../../UserInput/Input/Input.jsx";
-import PasswordInput from "../../UserInput/Input/PasswordInput.jsx";
 import styles from "./AuthForm.module.css";
 import saveTokenToCookies from "../../../util/TokenUtil.js";
 import "../From.css"
+import ShowAblePasswordInput from "../../UserInput/Input/ShowAblePasswordInput/ShowAblePasswordInput.jsx";
 
 function SignInForm() {
     const [username, setUsername] = useState("");
@@ -40,7 +40,7 @@ function SignInForm() {
                 navigate("/main");
             })
             .catch((error) => {
-                if (error.response.status === StatusCodes.FORBIDDEN)
+                if (error.response?.status === StatusCodes.FORBIDDEN)
                     setErrorMsg("Неверный логин или пароль");
                 else
                     setErrorMsg("Возникла непредвиденная ошибка на сервере");
@@ -67,7 +67,7 @@ function SignInForm() {
                 <label htmlFor="pwd">
                     Пароль:
                 </label>
-                <PasswordInput
+                <ShowAblePasswordInput
                     id="pwd"
                     value={password}
                     onChange={setPassword}

@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 
 function PasswordInput({ showPassword, ...rest }) {
     const inputType = showPassword ? "text" : "password";
-
     return <Input type={inputType} {...rest} />;
 }
 

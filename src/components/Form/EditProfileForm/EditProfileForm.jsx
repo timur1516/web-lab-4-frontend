@@ -8,6 +8,7 @@ import {useSelector} from "react-redux";
 import axiosUtil from "../../../util/AxiosUtil.js";
 import "../From.css"
 import axios from "axios";
+import ShowAblePasswordInput from "../../UserInput/Input/ShowAblePasswordInput/ShowAblePasswordInput.jsx";
 
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
 
@@ -79,7 +80,7 @@ function EditProfileForm() {
                 })
                 .then(cleanForm)
                 .catch((error) => {
-                    if (error.response.status === StatusCodes.FORBIDDEN)
+                    if (error.response?.status === StatusCodes.FORBIDDEN)
                         setErrorMsg("Неверный пароль");
                     else
                         setErrorMsg("Возникла непредвиденная ошибка на сервере");
@@ -120,7 +121,7 @@ function EditProfileForm() {
                 <label htmlFor="oldPwd">
                     Старый пароль:
                 </label>
-                <PasswordInput
+                <ShowAblePasswordInput
                     id="oldPwd"
                     value={oldPwd}
                     onChange={setOldPwd}
@@ -134,7 +135,7 @@ function EditProfileForm() {
                 <label htmlFor="pwd">
                     Новый пароль:
                 </label>
-                <PasswordInput
+                <ShowAblePasswordInput
                     id="pwd"
                     value={pwd}
                     onChange={setPwd}
@@ -148,7 +149,7 @@ function EditProfileForm() {
                 <label htmlFor="pwdConfirm">
                     Повторите новый пароль:
                 </label>
-                <PasswordInput
+                <ShowAblePasswordInput
                     id="pwdConfirm"
                     value={pwdConfirm}
                     onChange={setPwdConfirm}

@@ -4,11 +4,11 @@ import {StatusCodes} from "http-status-codes";
 import axios from "axios";
 import ErrorMessage from "../../ErrorMessage/ErrorMessage.jsx";
 import Input from "../../UserInput/Input/Input.jsx";
-import PasswordInput from "../../UserInput/Input/PasswordInput.jsx";
 import styles from "./AuthForm.module.css"
 import saveTokenToCookies from "../../../util/TokenUtil.js";
 import {generateAvatar, sendAvatarToServer} from "../../../util/AvatarUtil.js";
 import "../From.css"
+import ShowAblePasswordInput from "../../UserInput/Input/ShowAblePasswordInput/ShowAblePasswordInput.jsx";
 
 const LOGIN_REGEX = /^[a-zA-Z][a-zA-Z0-9]{3,23}$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
@@ -114,7 +114,7 @@ function SignUpForm() {
                 <label htmlFor="pwd">
                     Пароль:
                 </label>
-                <PasswordInput
+                <ShowAblePasswordInput
                     id="pwd"
                     value={pwd}
                     onChange={setPwd}
@@ -128,7 +128,7 @@ function SignUpForm() {
                 <label htmlFor="pwdConfirm">
                     Повторите пароль:
                 </label>
-                <PasswordInput
+                <ShowAblePasswordInput
                     id="pwdConfirm"
                     value={pwdConfirm}
                     onChange={setPwdConfirm}

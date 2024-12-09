@@ -4,8 +4,11 @@ import Footer from "../../components/Layout/Footer.jsx";
 import SignUpForm from "../../components/Form/AuthForm/SignUpForm.jsx";
 import styles from "./AuthPage.module.css";
 import {Link} from "react-router-dom";
+import {useEffect} from "react";
+import {setDefaultTheme} from "../../util/ThemeUtil.js";
 
 function SignUpPage(){
+    useEffect(setDefaultTheme, []);
     return(
         <>
             <Header/>
