@@ -5,7 +5,7 @@ function Header() {
         <div className={styles.header}>
             <span>Ступин Тимур</span>
             <span>P3208</span>
-            <span>Вариант: XXX</span>
+            <span>Вариант: 5454</span>
         </div>
     );
 }
